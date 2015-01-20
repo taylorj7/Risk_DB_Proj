@@ -10,7 +10,7 @@
 namespace RiskWebsite {
     
     
-    public partial class WebForm1 {
+    public partial class LoginPage {
         
         /// <summary>
         /// form1 control.
