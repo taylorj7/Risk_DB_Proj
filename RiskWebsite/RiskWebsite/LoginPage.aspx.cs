@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
 
 namespace RiskWebsite
 {
@@ -18,27 +19,40 @@ namespace RiskWebsite
         {
             String username = UsernameTextBox.Text;
             String password = PasswordTextBox.Text;
-            String connectionString = "titan/titan.Risk42.dbo";
+            SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
+            csBuilder.DataSource = "titan.csse.rose-hulman.edu";
+            csBuilder.InitialCatalog = "Risk42";
+            csBuilder.Encrypt = true;
+            csBuilder.TrustServerCertificate = true;
+            csBuilder.UserID = "mayja1";
+            csBuilder.Password = "Jaminboy1313";
+            String connectionString = csBuilder.ToString();
+            
             using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                using (var comm = conn.CreateCommand())
-                {
+                    SqlCommand comm = new SqlCommand("Login", conn);
+                    comm.CommandType = System.Data.CommandType.StoredProcedure;
+                    comm.Parameters.Add(new SqlParameter("@UserName", username.Trim()));
+                    comm.Parameters.Add(new SqlParameter("@Password", password.Trim()));
+                    comm.Parameters.Add(new SqlParameter("@UserID", System.Data.SqlDbType.Int));
+                    comm.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
+                    comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
+
                     conn.Open();
-                    comm.CommandText = "";
-
-                    // command type, parameters, etc.
-
-                    //pick one of the following
                     comm.ExecuteNonQuery();
-                    int value = (int)comm.ExecuteScalar();
-                    System.Data.SqlClient.SqlDataReader reader = comm.ExecuteReader();
 
-                }
+                    
+                    int returnval = (int)comm.Parameters["ReturnVal"].Value;
+                    conn.Close();
+                    if (returnval ==0)
+                    {
+                        int id = (int)Convert.ToInt32(comm.Parameters["@UserID"].Value);
+                        Console.WriteLine("" + id);
+                        System.Diagnostics.Debug.WriteLine("" + id);
+                        Response.Redirect("~/GameDisplayPage");
+                    }
             }
-            if (username == "admin" && password == "1234")
-            {
-                Response.Redirect("~/GameDisplayPage");
-            }
+           
         }
     }
 }
