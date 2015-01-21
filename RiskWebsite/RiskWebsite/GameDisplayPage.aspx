@@ -10,11 +10,18 @@
     <form id="form1" runat="server">
     <div>
     
-        Games<br />
-        <asp:Table ID="Table1" runat="server">
-        </asp:Table>
+        Game<br />
     
     </div>
+    <table width="100%" align="center" cellpadding="2" cellspacing="2" border="0" bgcolor="#EAEAEA" >
+        <tr align="left" style="background-color:#004080;color:White;" >
+            <td> ID </td>                        
+            <td> CurrentPosition </td>                
+        </tr>
+
+        <%=getWhileLoopData()%>
+
+    </table>
     </form>
 </body>
 </html>
