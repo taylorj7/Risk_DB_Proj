@@ -43,5 +43,23 @@ namespace RiskWebsite
         thisConnection.Close();
         return htmlStr;
 }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
+            csBuilder.DataSource = "titan.csse.rose-hulman.edu";
+            csBuilder.InitialCatalog = "Risk42";
+            csBuilder.Encrypt = true;
+            csBuilder.TrustServerCertificate = true;
+            csBuilder.UserID = "mayja1";
+            csBuilder.Password = "Jaminboy1313";
+            String connectionString = csBuilder.ToString();
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("Create Game", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@User_ID", 2));
+            thisConnection.Open();
+            thisCommand.ExecuteNonQuery();
+        }
     }
 }
