@@ -37,7 +37,7 @@ namespace RiskWebsite
 
             int id = reader.GetInt32(0);
             int CurrentPosition = reader.GetInt16(1);
-            htmlStr += "<tr><td>" + ID + "</td><td>" + CurrentPosition + "</td></tr>";                  
+            htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td></tr>";                  
         }
 
         thisConnection.Close();
