@@ -6,11 +6,11 @@ AS
 If @User_ID in (SELECT [User_id] FROM Users)
 BEGIN
 	DECLARE @max int
+	INSERT INTO Games (Current_Position, Sets_Submitted, Current_Turn)
+	VALUES (0,0,0);
 	SET @max = (SELECT MAX(Game_ID) FROM Games)
-	INSERT INTO Games (Game_ID, Current_Position, Sets_Submitted, Current_Turn)
-	VALUES (@max+1, 0,0,0);
 	INSERT INTO Player_In (Game_ID, [User_ID], Turn_Position)
-	VALUES (@max+1, @User_ID, 1);
+	VALUES (@max, @User_ID, 1);
 	return 0
 END
 return 1
