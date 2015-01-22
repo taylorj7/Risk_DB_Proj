@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LoginPage.aspx.cs" Inherits="RiskWebsite.LoginPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CreateAccountPage.aspx.cs" Inherits="RiskWebsite.CreateAccountPage" %>
 
 <!DOCTYPE html>
 
@@ -9,11 +9,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
-        Risk<br />
-        The Game of Global Domination<br />
+        Please enter a username and a password for your account.<br />
         <br />
-        <asp:Label ID ="UsernameLabel" runat="server" Text="Username: "></asp:Label>
+     <asp:Label ID ="UsernameLabel" runat="server" Text="Username: "></asp:Label>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="Label1" runat="server" Text="Password: "></asp:Label>
         <br />
         
@@ -22,10 +20,10 @@
         <asp:TextBox ID="PasswordTextBox" runat="server"></asp:TextBox>
     
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="Button1" runat="server" Text="Login" OnClick="Button1_Click" />
+        <asp:Button ID="CreateAccountButton" runat="server" Text="Create Account" OnClick="CreateAccountButton_Click" />
     
         <br />
-        <a href="CreateAccountPage">Sign-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="~/ForgotPassword">Forgot-Password</a><br />
+        <asp:Label ID="SuccessLabel" runat="server" Text=""></asp:Label>
     
     </div>
     </form>

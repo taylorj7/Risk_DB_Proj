@@ -165,6 +165,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="CreateAccountPage.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="GameDisplayPage.aspx" />
     <Content Include="HtmlPage1.html" />
@@ -344,6 +345,13 @@
     </Compile>
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CreateAccountPage.aspx.cs">
+      <DependentUpon>CreateAccountPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CreateAccountPage.aspx.designer.cs">
+      <DependentUpon>CreateAccountPage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
