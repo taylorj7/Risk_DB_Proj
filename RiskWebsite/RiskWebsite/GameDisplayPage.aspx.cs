@@ -28,7 +28,7 @@ namespace RiskWebsite
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("Get Active Games", thisConnection);
             thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_ID", 2));
+            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
             thisConnection.Open();
             SqlDataReader reader = thisCommand.ExecuteReader();
 
@@ -57,7 +57,7 @@ namespace RiskWebsite
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("Create Game", thisConnection);
             thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_ID", 2));
+            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
             thisConnection.Open();
             thisCommand.ExecuteNonQuery();
         }

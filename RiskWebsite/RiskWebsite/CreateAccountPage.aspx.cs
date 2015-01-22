@@ -41,7 +41,7 @@ namespace RiskWebsite
 
                 int returnval = (int)comm.Parameters["ReturnVal"].Value;
                 conn.Close();
-                if (returnval = 0)
+                if (returnval == 0)
                 {
                     SuccessLabel.Text = "Successfully created account";
 

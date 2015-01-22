@@ -47,8 +47,7 @@ namespace RiskWebsite
                     if (returnval ==0)
                     {
                         int id = (int)Convert.ToInt32(comm.Parameters["@UserID"].Value);
-                        Console.WriteLine("" + id);
-                        System.Diagnostics.Debug.WriteLine("" + id);
+                        Application["id"] = id;
                         Response.Redirect("~/GameDisplayPage");
                     }
             }
