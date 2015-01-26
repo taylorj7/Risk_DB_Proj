@@ -20,9 +20,9 @@ namespace RiskWebsite
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";
             csBuilder.Encrypt = true;
-            csBuilder.TrustServerCertificate = true;
-            csBuilder.UserID = "mayja1";
-            csBuilder.Password = "Jaminboy1313";
+            csBuilder.TrustServerCertificate = true; 
+            csBuilder.UserID = "333Winter2014Risk";
+            csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
             string htmlStr = "";
             SqlConnection thisConnection = new SqlConnection(connectionString);
@@ -51,8 +51,8 @@ namespace RiskWebsite
             csBuilder.InitialCatalog = "Risk42";
             csBuilder.Encrypt = true;
             csBuilder.TrustServerCertificate = true;
-            csBuilder.UserID = "mayja1";
-            csBuilder.Password = "Jaminboy1313";
+            csBuilder.UserID = "333Winter2014Risk";
+            csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("Create Game", thisConnection);

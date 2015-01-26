@@ -24,8 +24,8 @@ namespace RiskWebsite
             csBuilder.InitialCatalog = "Risk42";
             csBuilder.Encrypt = true;
             csBuilder.TrustServerCertificate = true;
-            csBuilder.UserID = "mayja1";
-            csBuilder.Password = "Jaminboy1313";
+            csBuilder.UserID = "333Winter2014Risk";
+            csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
             
             using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
