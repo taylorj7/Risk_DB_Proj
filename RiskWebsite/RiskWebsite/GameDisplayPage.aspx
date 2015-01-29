@@ -37,6 +37,13 @@
         <asp:Button ID="AddUserButton" runat="server" Text="Add User" OnClick="AddUserButton_Click" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
+        <br />
+        <br />
+        Enter Game:<br />
+        GameID:<br />
+        <asp:TextBox ID="GameIDTextBox2" runat="server"></asp:TextBox>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Button ID="EnterGameButton" runat="server" Text="Enter Game" OnClick="EnterGameButton_Click" />
     </div>
     </form>
     </body>

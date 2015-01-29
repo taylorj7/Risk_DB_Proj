@@ -168,6 +168,7 @@
     <Content Include="CreateAccountPage.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="GameDisplayPage.aspx" />
+    <Content Include="GameStatePage.aspx" />
     <Content Include="HtmlPage1.html" />
     <Content Include="packages.config" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -366,6 +367,13 @@
     </Compile>
     <Compile Include="GameDisplayPage.aspx.designer.cs">
       <DependentUpon>GameDisplayPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GameStatePage.aspx.cs">
+      <DependentUpon>GameStatePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GameStatePage.aspx.designer.cs">
+      <DependentUpon>GameStatePage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

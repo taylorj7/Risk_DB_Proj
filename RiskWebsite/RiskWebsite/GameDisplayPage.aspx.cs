@@ -94,5 +94,13 @@ namespace RiskWebsite
                 Label1.Text = "User failed to be added";
             }
         }
+
+        protected void EnterGameButton_Click(object sender, EventArgs e)
+        {
+            int gameID = Convert.ToInt32(GameIDTextBox2.Text);
+            Application["game"] = gameID;
+            Response.Redirect("~/GameStatePage");
+
+        }
     }
 }
