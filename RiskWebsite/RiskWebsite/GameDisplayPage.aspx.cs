@@ -61,5 +61,38 @@ namespace RiskWebsite
             thisConnection.Open();
             thisCommand.ExecuteNonQuery();
         }
+
+        protected void AddUserButton_Click(object sender, EventArgs e)
+        {
+            SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
+            csBuilder.DataSource = "titan.csse.rose-hulman.edu";
+            csBuilder.InitialCatalog = "Risk42";
+            csBuilder.Encrypt = true;
+            csBuilder.TrustServerCertificate = true;
+            csBuilder.UserID = "333Winter2014Risk";
+            csBuilder.Password = "Password123";
+            String connectionString = csBuilder.ToString();
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("add To Game", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
+            thisCommand.Parameters.Add(new SqlParameter("@Username", UsernameTextBox.Text));
+            thisCommand.Parameters.Add(new SqlParameter("@Game_id", Convert.ToInt32(GameIDTextBox.Text)));
+            thisCommand.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
+
+            thisConnection.Open();
+            thisCommand.ExecuteNonQuery();
+
+            int returnval = (int)thisCommand.Parameters["ReturnVal"].Value;
+            thisConnection.Close();
+            if (returnval == 0)
+            {
+                Label1.Text = "User added successfully!";
+            }
+            else
+            {
+                Label1.Text = "User failed to be added";
+            }
+        }
     }
 }

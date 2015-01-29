@@ -6,7 +6,7 @@
 <head runat="server">
     <title></title>
 </head>
-<body>
+<body style="height: 110px">
     <form id="form1" runat="server">
     <div>
     
@@ -23,6 +23,21 @@
 
     </table>
         <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Create New Game" />
+    <div>
+    <br />
+        Add a friend to one of your games that hasn&#39;t started:
+        <br />
+        Friend Username:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameID:
+        <br />
+        <asp:TextBox ID="UsernameTextBox" runat="server"></asp:TextBox>
+        &nbsp;&nbsp;&nbsp;
+        <asp:TextBox ID="GameIDTextBox" runat="server"></asp:TextBox>
+    
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Button ID="AddUserButton" runat="server" Text="Add User" OnClick="AddUserButton_Click" />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
+    </div>
     </form>
-</body>
+    </body>
 </html>
