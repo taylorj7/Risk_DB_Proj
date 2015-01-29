@@ -15,3 +15,12 @@ GO
 GRANT EXECUTE ON [login]
 TO [333Winter2014Risk]
 GO
+GRANT EXECUTE ON [add To Game]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [FoRGottEN PAssword]
+TO [333Winter2014Risk]
+GO 
+GRANT EXECUTE ON [getGameState]
+TO [333Winter2014Risk]
+GO
