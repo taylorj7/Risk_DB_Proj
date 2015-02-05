@@ -13,6 +13,8 @@
         Game:
         <asp:Label ID="GameIDLabel" runat="server" Text=""></asp:Label>
         <br />
+        <asp:Button ID="StartButton" runat="server" Text="Start Game" OnClick="StartButton_Click" />
+        <br />
         <asp:Image id="Image1" runat="server"
            AlternateText="Image text"
            ImageAlign="left"
