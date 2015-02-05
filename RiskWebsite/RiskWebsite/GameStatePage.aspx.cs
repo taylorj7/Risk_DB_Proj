@@ -13,7 +13,10 @@ namespace RiskWebsite
         protected void Page_Load(object sender, EventArgs e)
         {
             GameIDLabel.Text = "" + Application["game"];
-            
+            if ((Boolean)Application["gameStarted"])
+            {
+                StartButton.Visible = false;
+            }
         }
 
         public string getWhileLoopData()

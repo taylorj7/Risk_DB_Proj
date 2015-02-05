@@ -13,7 +13,7 @@ namespace RiskWebsite
         Dictionary<int, Boolean> gameStarted;
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            getWhileLoopData();
         }
 
         public string getWhileLoopData() {
@@ -103,7 +103,7 @@ namespace RiskWebsite
         {
             int gameID = Convert.ToInt32(GameIDTextBox2.Text);
             Application["game"] = gameID;
-            //Application["gameStarted"] = gameStarted[gameID];
+            Application["gameStarted"] = gameStarted[gameID];
             Response.Redirect("~/GameStatePage");
 
         }
