@@ -58,6 +58,15 @@ namespace RiskWebsite {
         protected global::System.Web.UI.WebControls.TextBox PasswordTextBox;
         
         /// <summary>
+        /// PhraseTextBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox PhraseTextBox;
+        
+        /// <summary>
         /// CreateAccountButton control.
         /// </summary>
         /// <remarks>

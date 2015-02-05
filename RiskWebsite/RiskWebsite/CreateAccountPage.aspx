@@ -9,16 +9,17 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        Please enter a username and a password for your account.<br />
+        Please enter a username, password, and confirmation phrase for your account. The phrase can be used if you forget your password.<br />
         <br />
      <asp:Label ID ="UsernameLabel" runat="server" Text="Username: "></asp:Label>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="Label1" runat="server" Text="Password: "></asp:Label>
-        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Phrase:<br />
         
         <asp:TextBox ID="UsernameTextBox" runat="server"></asp:TextBox>
         &nbsp;&nbsp;&nbsp;
         <asp:TextBox ID="PasswordTextBox" runat="server"></asp:TextBox>
-    
+        &nbsp;&nbsp;&nbsp;
+        <asp:TextBox ID="PhraseTextBox" runat="server"></asp:TextBox>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="CreateAccountButton" runat="server" Text="Create Account" OnClick="CreateAccountButton_Click" />
     

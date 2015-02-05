@@ -5,17 +5,19 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
-
+using System.Collections;
 namespace RiskWebsite
 {
     public partial class GameDisplayPage : System.Web.UI.Page
     {
+        Dictionary<int, Boolean> gameStarted;
         protected void Page_Load(object sender, EventArgs e)
-        {               
-            
+        {
+
         }
 
         public string getWhileLoopData() {
+            gameStarted = new Dictionary<int, Boolean>();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";
@@ -37,7 +39,9 @@ namespace RiskWebsite
 
             int id = reader.GetInt32(0);
             int CurrentPosition = reader.GetInt16(1);
-            htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td></tr>";                  
+            Boolean started = reader.GetBoolean(2);
+            gameStarted.Add(id, started);
+            htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td><td>" + started + "</td></tr>";                  
         }
 
         thisConnection.Close();
@@ -99,6 +103,7 @@ namespace RiskWebsite
         {
             int gameID = Convert.ToInt32(GameIDTextBox2.Text);
             Application["game"] = gameID;
+            //Application["gameStarted"] = gameStarted[gameID];
             Response.Redirect("~/GameStatePage");
 
         }

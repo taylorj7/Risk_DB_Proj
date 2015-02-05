@@ -18,6 +18,7 @@ namespace RiskWebsite
         {
             String username = UsernameTextBox.Text;
             String password = PasswordTextBox.Text;
+            String phrase = PhraseTextBox.Text;
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";
@@ -31,8 +32,9 @@ namespace RiskWebsite
             {
                 SqlCommand comm = new SqlCommand("CREATE USER", conn);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.Add(new SqlParameter("@UserName", username.Trim()));
+                comm.Parameters.Add(new SqlParameter("@Username", username.Trim()));
                 comm.Parameters.Add(new SqlParameter("@Password", (username.Trim()+password.Trim()).GetHashCode()));
+                comm.Parameters.Add(new SqlParameter("@Phrase", (username.Trim() + phrase.Trim()).GetHashCode()));
                 comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
 
                 conn.Open();
