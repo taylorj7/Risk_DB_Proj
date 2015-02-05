@@ -45,12 +45,14 @@ namespace RiskWebsite
                 conn.Close();
                 if (returnval == 0)
                 {
-                    SuccessLabel.Text = "Successfully created account";
+
+                    SuccessLabel.Text = "Failed to created account";
 
                 }
                 else
                 {
-                    SuccessLabel.Text = "Failed to created account";
+
+                    SuccessLabel.Text = "Successfully created account";
                 }
             }
         }

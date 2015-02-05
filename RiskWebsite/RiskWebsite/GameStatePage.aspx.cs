@@ -93,6 +93,18 @@ namespace RiskWebsite
             int numPlayers = players.Count;
             int playerIndex = 0;
             int troopCount = 2;
+            if (numPlayers < 2)
+            {
+                return;
+            }
+            SqlConnection startConnection = new SqlConnection(connectionString);
+            SqlCommand startCommand = new SqlCommand("start_game", startConnection);
+
+            startCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            startCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            startConnection.Open();
+            startCommand.ExecuteNonQuery();
+            startConnection.Close();
             while (countryNames.Count > 0)
             {
                 string country = (string) countryNames[rand.Next(countryNames.Count)];
@@ -114,6 +126,7 @@ namespace RiskWebsite
                     playerIndex = 0;
                 }
             }
+            StartButton.Visible = false;
             
         }
     }
