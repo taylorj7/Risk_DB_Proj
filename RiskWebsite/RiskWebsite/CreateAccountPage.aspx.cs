@@ -32,7 +32,7 @@ namespace RiskWebsite
                 SqlCommand comm = new SqlCommand("CREATE USER", conn);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Parameters.Add(new SqlParameter("@UserName", username.Trim()));
-                comm.Parameters.Add(new SqlParameter("@Password", password.Trim()));
+                comm.Parameters.Add(new SqlParameter("@Password", (username.Trim()+password.Trim()).GetHashCode()));
                 comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
 
                 conn.Open();
