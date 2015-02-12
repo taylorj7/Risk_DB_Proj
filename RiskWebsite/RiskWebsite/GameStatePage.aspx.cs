@@ -370,6 +370,12 @@ namespace RiskWebsite
             MoveTroopsNumber.Visible = false;
             EndTurn.Visible = false;
         }
+
+        protected void PlaceButton_Click(object sender, EventArgs e)
+        {
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+        }
     }
 
     
