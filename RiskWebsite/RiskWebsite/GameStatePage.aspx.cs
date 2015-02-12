@@ -168,7 +168,17 @@ namespace RiskWebsite
 
         protected void YourCountriesAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            ArrayList borderCountries = getBorderingCountries(YourCountriesAttack.SelectedItem.Value);
+            for (int i = 0; i < borderCountries.Count; i++)
+            {
+                if ((int) Application["id"] == countryOwners[((string)borderCountries[i])])
+                {
+                    borderCountries.RemoveAt(i);
+                    i--;
+                }
+            }
+            BorderingCountriesAttack.DataSource = borderCountries.ToArray();
+            BorderingCountriesAttack.DataBind();
         }
 
         protected void AttackButton_Click(object sender, EventArgs e)
@@ -224,37 +234,60 @@ namespace RiskWebsite
                 defendNums.RemoveAt(maxDefend);
             }
             AttackResult.Text = "";
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
-            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
-            gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - attackLoss));
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            gameConnection.Close();
+            
 
             if (countryTroops[defendingCountry] > defendLoss)
             {
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
+                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - attackLoss));
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                gameConnection.Close();
+
                 SqlConnection gameConnection2 = new SqlConnection(connectionString);
                 SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
                 gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
                 gameCommand2.Parameters.Add(new SqlParameter("@Owner", countryOwners[defendingCountry]));
                 gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
                 gameCommand2.Parameters.Add(new SqlParameter("@Country", yourCountry));
-                gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - defendLoss));
+                gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[defendingCountry] - defendLoss));
                 gameConnection2.Open();
                 gameCommand2.ExecuteNonQuery();
                 gameConnection2.Close();
+                AttackResult.Text = yourCountry + " lost " + attackLoss + " troops and " + defendingCountry + " lost " + defendLoss + " troops ";
             }
-            if (countryTroops[defendingCountry] <= defendLoss)
+            else
             {
                 AttackResult.Text += "You conquered " + defendingCountry;
                 defendLoss = 0; //made zero since we are going to do the conquer query, don't need to update the defending country.
                 //sql query to conquer country, subtract add one to attack loss
-            }
+                SqlConnection gameConnection3 = new SqlConnection(connectionString);
+                SqlCommand gameCommand3 = new SqlCommand("Change_Country_Owner", gameConnection3);
+                gameCommand3.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand3.Parameters.Add(new SqlParameter("@attackerID", Application["id"]));
+                gameCommand3.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand3.Parameters.Add(new SqlParameter("@Country", defendingCountry));
+                gameConnection3.Open();
+                gameCommand3.ExecuteNonQuery();
+                gameConnection3.Close();
 
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
+                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - (attackLoss + 1)));
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                gameConnection.Close();
+            }
+            setupDropDownLists();
             
         }
 
@@ -276,5 +309,23 @@ namespace RiskWebsite
             }
             return index;
         }
+        private ArrayList getBorderingCountries(string country)
+        {
+            ArrayList borderCountries = new ArrayList();
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("borderingCountries", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@Country", country));
+            gameConnection.Open();
+            SqlDataReader countryReader = gameCommand.ExecuteReader();
+            while (countryReader.Read())
+            {
+                borderCountries.Add(countryReader.GetString(0));
+            }
+            gameConnection.Close();
+            return borderCountries;
+        }
     }
+
+    
 }
