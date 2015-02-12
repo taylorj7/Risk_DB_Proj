@@ -254,7 +254,7 @@ namespace RiskWebsite
                 gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
                 gameCommand2.Parameters.Add(new SqlParameter("@Owner", countryOwners[defendingCountry]));
                 gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-                gameCommand2.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand2.Parameters.Add(new SqlParameter("@Country", defendingCountry));
                 gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[defendingCountry] - defendLoss));
                 gameConnection2.Open();
                 gameCommand2.ExecuteNonQuery();
