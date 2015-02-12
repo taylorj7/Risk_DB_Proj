@@ -19,6 +19,7 @@ namespace RiskWebsite
 
         public string getWhileLoopData() {
             gameStarted = new Dictionary<int, Boolean>();
+            gameTurn = new Dictionary<int, int>();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";

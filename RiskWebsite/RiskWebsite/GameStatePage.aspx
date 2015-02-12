@@ -46,7 +46,7 @@
         <br />
         Attack 
         <br />
-        <asp:DropDownList ID="YourCountriesAttack" runat="server" OnSelectedIndexChanged="YourCountriesAttack_SelectedIndexChanged"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourCountriesAttack" runat="server" autoPostBack="true" OnSelectedIndexChanged="YourCountriesAttack_SelectedIndexChanged"></asp:DropDownList> &nbsp;
         <asp:DropDownList ID="BorderingCountriesAttack" runat="server"></asp:DropDownList> &nbsp;
         &nbsp; <asp:Button ID="AttackButton" runat="server" Text="Attack" OnClick="AttackButton_Click" /> &nbsp;
         

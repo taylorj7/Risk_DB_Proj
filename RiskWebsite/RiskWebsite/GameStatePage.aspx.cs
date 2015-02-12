@@ -34,19 +34,19 @@ namespace RiskWebsite
             {
                 StartButton.Visible = false;
                 SqlConnection thisConnection = new SqlConnection(connectionString);
-                SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
+                SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
                 thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
-                thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
                 thisConnection.Open();
                 SqlDataReader reader = thisCommand.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    turn = reader.GetInt32(0);
+                    turn = reader.GetInt16(0);
                     if (turn != (int)Application["turn"])
                     {
-                        hideTurnFields();
+                        //hideTurnFields();
                     }
                 }
             }
@@ -59,6 +59,8 @@ namespace RiskWebsite
         public void setupDropDownLists()
         {
             ArrayList countries = new ArrayList();
+            countryTroops.Clear();
+            countryOwners.Clear();
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
             thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
@@ -84,12 +86,15 @@ namespace RiskWebsite
 
             thisConnection.Close();
             myCountries = countries.ToArray();
-            YourCountriesAttack.DataSource = myCountries;
-            YourCountriesAttack.DataBind();
-            YourCountriesMove.DataSource = myCountries;
-            YourCountriesMove.DataBind();
-            YourCountriesPlace.DataSource = myCountries;
-            YourCountriesPlace.DataBind();
+            if (!IsPostBack)
+            {
+                YourCountriesAttack.DataSource = myCountries;
+                YourCountriesAttack.DataBind();
+                YourCountriesMove.DataSource = myCountries;
+                YourCountriesMove.DataBind();
+                YourCountriesPlace.DataSource = myCountries;
+                YourCountriesPlace.DataBind();
+            }
             
         }
         public string getWhileLoopData()
@@ -201,6 +206,7 @@ namespace RiskWebsite
             }
             BorderingCountriesAttack.DataSource = borderCountries.ToArray();
             BorderingCountriesAttack.DataBind();
+            AttackResult.Text = ("Changed index " + (YourCountriesAttack.SelectedItem.Value.ToString()));
         }
 
         protected void AttackButton_Click(object sender, EventArgs e)
@@ -212,7 +218,7 @@ namespace RiskWebsite
             int yourTroops = countryTroops[yourCountry];
             int defendingTroops = countryTroops[defendingCountry];
             int attackDice = yourTroops -1;
-            int defendDice = defendingTroops -1;
+            int defendDice = defendingTroops;
             int attackLoss = 0;
             int defendLoss = 0;
             if (yourTroops <= 1)
