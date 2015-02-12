@@ -393,6 +393,30 @@ namespace RiskWebsite
             SqlConnection gameConnection = new SqlConnection(connectionString);
             SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
         }
+
+
+
+        protected void MoveTroopsButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void YourCountriesPlace_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void YourCountriesMove_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void YourBorderingCountriesMove_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 
     
