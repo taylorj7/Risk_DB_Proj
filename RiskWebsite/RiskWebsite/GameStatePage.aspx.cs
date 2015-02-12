@@ -245,12 +245,13 @@ namespace RiskWebsite
                 int roll = rand.Next(1, 7);
                 defendNums.Add(roll);
             }
-            for (int i = 0; i < defendDice; i++)
+            for (int i = 0; i < Math.Min(defendDice, attackDice); i++)
             {
                 int maxAttack = calculateMaxIndex(attackNums);
                 int maxDefend = calculateMaxIndex(defendNums);
-
-                if ((int)defendNums[maxDefend] >= (int)attackNums[maxAttack])
+                int defendNum = (int) defendNums[maxDefend];
+                int attackNum = (int)attackNums[maxAttack];
+                if (defendNum >= attackNum)
                 {
                     attackLoss++;
                 }
