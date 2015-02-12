@@ -10,10 +10,14 @@ namespace RiskWebsite
 {
     public partial class GameStatePage : System.Web.UI.Page
     {
+        private Dictionary<String, int> countryTroops;
+        private Dictionary<String, int> countryOwners;
         private String connectionString;
         private object[] myCountries;
         protected void Page_Load(object sender, EventArgs e)
         {
+            countryTroops = new Dictionary<string, int>();
+            countryOwners = new Dictionary<string, int>();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";
@@ -48,6 +52,8 @@ namespace RiskWebsite
                 int numSoldiers = reader.GetInt32(1);
                 int userID = reader.GetInt32(2);
                 string country = reader.GetString(3);
+                countryTroops.Add(country, numSoldiers);
+                countryOwners.Add(country, userID);
                 if (userID == (int)Application["id"])
                 {
                    countries.Add(country);
@@ -158,6 +164,117 @@ namespace RiskWebsite
             }
             StartButton.Visible = false;
             
+        }
+
+        protected void YourCountriesAttack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void AttackButton_Click(object sender, EventArgs e)
+        {
+            ArrayList attackNums = new ArrayList();
+            ArrayList defendNums = new ArrayList();
+            string yourCountry = YourCountriesAttack.SelectedItem.Value;
+            string defendingCountry = BorderingCountriesAttack.SelectedItem.Value;
+            int yourTroops = countryTroops[yourCountry];
+            int defendingTroops = countryTroops[defendingCountry];
+            int attackDice = yourTroops -1;
+            int defendDice = defendingTroops -1;
+            int attackLoss = 0;
+            int defendLoss = 0;
+            if (yourTroops <= 1)
+            {
+                AttackResult.Text = "You can't attack with so few troops!";
+                return;
+            }
+            if (attackDice > 3)
+            {
+                attackDice = 3;
+            }
+            if (defendDice > 2)
+            {
+                defendDice = 2;
+            }
+            Random rand = new Random();
+            for (int i = 0; i < attackDice; i++)
+            {
+                int roll = rand.Next(1, 7);
+                attackNums.Add(roll);
+            }
+            for (int i = 0; i < defendDice; i++)
+            {
+                int roll = rand.Next(1, 7);
+                defendNums.Add(roll);
+            }
+            for (int i = 0; i < defendDice; i++)
+            {
+                int maxAttack = calculateMaxIndex(attackNums);
+                int maxDefend = calculateMaxIndex(defendNums);
+
+                if ((int)defendNums[maxDefend] >= (int)attackNums[maxAttack])
+                {
+                    attackLoss++;
+                }
+                else
+                {
+                    defendLoss++;
+                }
+                attackNums.RemoveAt(maxAttack);
+                defendNums.RemoveAt(maxDefend);
+            }
+            AttackResult.Text = "";
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
+            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+            gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - attackLoss));
+            gameConnection.Open();
+            gameCommand.ExecuteNonQuery();
+            gameConnection.Close();
+
+            if (countryTroops[defendingCountry] > defendLoss)
+            {
+                SqlConnection gameConnection2 = new SqlConnection(connectionString);
+                SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
+                gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand2.Parameters.Add(new SqlParameter("@Owner", countryOwners[defendingCountry]));
+                gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand2.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - defendLoss));
+                gameConnection2.Open();
+                gameCommand2.ExecuteNonQuery();
+                gameConnection2.Close();
+            }
+            if (countryTroops[defendingCountry] <= defendLoss)
+            {
+                AttackResult.Text += "You conquered " + defendingCountry;
+                defendLoss = 0; //made zero since we are going to do the conquer query, don't need to update the defending country.
+                //sql query to conquer country, subtract add one to attack loss
+            }
+
+            
+        }
+
+        private int calculateMaxIndex(ArrayList list) {
+            if (list.Count == 0)
+            {
+                return -1;
+            }
+            int max = (int)list[0];
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                int num = (int)list[i];
+                if (num > max)
+                {
+                    index = i;
+                    max = num;
+                }
+            }
+            return index;
         }
     }
 }
