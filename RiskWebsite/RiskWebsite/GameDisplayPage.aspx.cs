@@ -37,8 +37,8 @@ namespace RiskWebsite
         while (reader.Read())
         {
 
-            int id = reader.GetInt32(0);
-            int CurrentPosition = reader.GetInt16(1);
+            int id = reader.GetInt32(1);
+            int CurrentPosition = reader.GetInt16(0);
             Boolean started = reader.GetBoolean(2);
             gameStarted.Add(id, started);
             htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td><td>" + started + "</td></tr>";                  
