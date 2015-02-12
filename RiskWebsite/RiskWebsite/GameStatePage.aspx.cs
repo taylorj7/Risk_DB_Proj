@@ -16,6 +16,7 @@ namespace RiskWebsite
         private object[] myCountries;
         protected void Page_Load(object sender, EventArgs e)
         {
+            int turn;
             countryTroops = new Dictionary<string, int>();
             countryOwners = new Dictionary<string, int>();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
@@ -28,9 +29,30 @@ namespace RiskWebsite
             connectionString = csBuilder.ToString();
             setupDropDownLists();
             GameIDLabel.Text = "" + Application["game"];
+            TurnLabel.Text = "It is your turn!";
             if ((Boolean)Application["gameStarted"])
             {
                 StartButton.Visible = false;
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    turn = reader.GetInt32(0);
+                    if (turn != (int)Application["turn"])
+                    {
+                        hideTurnFields();
+                    }
+                }
+            }
+            else
+            {
+                hideTurnFields();
             }
         }
 
@@ -324,6 +346,22 @@ namespace RiskWebsite
             }
             gameConnection.Close();
             return borderCountries;
+        }
+
+        private void hideTurnFields() {
+            TurnLabel.Text = "It is not your turn!";
+            AttackButton.Visible = false;
+            AttackResult.Visible = false;
+            YourBorderingCountriesMove.Visible = false;
+            YourCountriesAttack.Visible = false;
+            YourCountriesMove.Visible = false;
+            YourCountriesPlace.Visible = false;
+            BorderingCountriesAttack.Visible = false;
+            TextBox1.Visible = false;
+            PlaceButton.Visible = false;
+            MoveTroopsButton.Visible = false;
+            MoveTroopsNumber.Visible = false;
+            EndTurn.Visible = false;
         }
     }
 

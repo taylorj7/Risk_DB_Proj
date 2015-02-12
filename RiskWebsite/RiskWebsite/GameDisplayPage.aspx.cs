@@ -11,6 +11,7 @@ namespace RiskWebsite
     public partial class GameDisplayPage : System.Web.UI.Page
     {
         Dictionary<int, Boolean> gameStarted;
+        Dictionary<int, int> gameTurn;
         protected void Page_Load(object sender, EventArgs e)
         {
             getWhileLoopData();
@@ -41,6 +42,7 @@ namespace RiskWebsite
             int CurrentPosition = reader.GetInt16(0);
             Boolean started = reader.GetBoolean(2);
             gameStarted.Add(id, started);
+            gameTurn.Add(id, CurrentPosition);
             htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td><td>" + started + "</td></tr>";                  
         }
 
@@ -104,6 +106,7 @@ namespace RiskWebsite
             int gameID = Convert.ToInt32(GameIDTextBox2.Text);
             Application["game"] = gameID;
             Application["gameStarted"] = gameStarted[gameID];
+            Application["turn"] = gameTurn[gameID];
             Response.Redirect("~/GameStatePage");
 
         }
