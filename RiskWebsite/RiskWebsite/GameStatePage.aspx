@@ -53,8 +53,8 @@
         <br />
         Move Troops 
         <br />
-        <asp:DropDownList ID="DropDownList1" runat="server"></asp:DropDownList> &nbsp;
-        <asp:DropDownList ID="DropDownList2" runat="server"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourCountriesMove" runat="server"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourBorderingCountriesMove" runat="server"></asp:DropDownList> &nbsp;
         <asp:TextBox ID="MoveTroopsNumber" runat="server" placeholder ="number of troops"></asp:TextBox>
         &nbsp; <asp:Button ID="MoveTroopsButton" runat="server" Text="Move" />
         <br />

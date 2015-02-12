@@ -121,22 +121,22 @@ namespace RiskWebsite {
         protected global::System.Web.UI.WebControls.Button AttackButton;
         
         /// <summary>
-        /// DropDownList1 control.
+        /// YourCountriesMove control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
+        protected global::System.Web.UI.WebControls.DropDownList YourCountriesMove;
         
         /// <summary>
-        /// DropDownList2 control.
+        /// YourBorderingCountriesMove control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList2;
+        protected global::System.Web.UI.WebControls.DropDownList YourBorderingCountriesMove;
         
         /// <summary>
         /// MoveTroopsNumber control.

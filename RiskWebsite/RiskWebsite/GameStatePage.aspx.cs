@@ -10,16 +10,9 @@ namespace RiskWebsite
 {
     public partial class GameStatePage : System.Web.UI.Page
     {
+        private String connectionString;
+        private object[] myCountries;
         protected void Page_Load(object sender, EventArgs e)
-        {
-            GameIDLabel.Text = "" + Application["game"];
-            if ((Boolean)Application["gameStarted"])
-            {
-                StartButton.Visible = false;
-            }
-        }
-
-        public string getWhileLoopData()
         {
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
@@ -28,7 +21,52 @@ namespace RiskWebsite
             csBuilder.TrustServerCertificate = true;
             csBuilder.UserID = "333Winter2014Risk";
             csBuilder.Password = "Password123";
-            String connectionString = csBuilder.ToString();
+            connectionString = csBuilder.ToString();
+            setupDropDownLists();
+            GameIDLabel.Text = "" + Application["game"];
+            if ((Boolean)Application["gameStarted"])
+            {
+                StartButton.Visible = false;
+            }
+        }
+
+        public void setupDropDownLists()
+        {
+            ArrayList countries = new ArrayList();
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
+            thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
+            thisConnection.Open();
+            SqlDataReader reader = thisCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+
+                int id = reader.GetInt32(0);
+                int numSoldiers = reader.GetInt32(1);
+                int userID = reader.GetInt32(2);
+                string country = reader.GetString(3);
+                if (userID == (int)Application["id"])
+                {
+                   countries.Add(country);
+                }
+            }
+
+            thisConnection.Close();
+            myCountries = countries.ToArray();
+            YourCountriesAttack.DataSource = myCountries;
+            YourCountriesAttack.DataBind();
+            YourCountriesMove.DataSource = myCountries;
+            YourCountriesMove.DataBind();
+            YourCountriesPlace.DataSource = myCountries;
+            YourCountriesPlace.DataBind();
+            
+        }
+        public string getWhileLoopData()
+        {
+            
             string htmlStr = "";
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
@@ -56,14 +94,6 @@ namespace RiskWebsite
         {
             ArrayList countryNames = new ArrayList();
             ArrayList players = new ArrayList();
-             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
-            csBuilder.DataSource = "titan.csse.rose-hulman.edu";
-            csBuilder.InitialCatalog = "Risk42";
-            csBuilder.Encrypt = true;
-            csBuilder.TrustServerCertificate = true;
-            csBuilder.UserID = "333Winter2014Risk";
-            csBuilder.Password = "Password123";
-            String connectionString = csBuilder.ToString();
 
             SqlConnection thisConnection = new SqlConnection(connectionString);
             SqlCommand thisCommand = new SqlCommand("gET_cOUNTRIES", thisConnection);
