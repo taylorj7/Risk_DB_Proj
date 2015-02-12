@@ -16,7 +16,6 @@ namespace RiskWebsite
         private object[] myCountries;
         protected void Page_Load(object sender, EventArgs e)
         {
-            int turn;
             countryTroops = new Dictionary<string, int>();
             countryOwners = new Dictionary<string, int>();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
@@ -29,30 +28,15 @@ namespace RiskWebsite
             connectionString = csBuilder.ToString();
             setupDropDownLists();
             GameIDLabel.Text = "" + Application["game"];
-            TurnLabel.Text = "It is your turn!";
+            
             if ((Boolean)Application["gameStarted"])
             {
                 StartButton.Visible = false;
-                SqlConnection thisConnection = new SqlConnection(connectionString);
-                SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
-                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-                thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-                thisConnection.Open();
-                SqlDataReader reader = thisCommand.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    turn = reader.GetInt16(0);
-                    if (turn != (int)Application["turn"])
-                    {
-                        //hideTurnFields();
-                    }
-                }
+                hideTurnFields();
             }
             else
             {
-                hideTurnFields();
+                hideEverything();
             }
         }
 
@@ -355,7 +339,28 @@ namespace RiskWebsite
             return borderCountries;
         }
 
-        private void hideTurnFields() {
+        private void hideTurnFields()
+        {
+            TurnLabel.Text = "It is your turn!";
+            int turn;
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            thisConnection.Open();
+            SqlDataReader reader = thisCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                turn = reader.GetInt16(0);
+                if (turn != (int)Application["turn"])
+                {
+                    hideEverything();
+                }
+            }
+        }
+        protected void hideEverything() {
             TurnLabel.Text = "It is not your turn!";
             AttackButton.Visible = false;
             AttackResult.Visible = false;
@@ -369,6 +374,18 @@ namespace RiskWebsite
             MoveTroopsButton.Visible = false;
             MoveTroopsNumber.Visible = false;
             EndTurn.Visible = false;
+                    
+        }
+        protected void EndTurn_Click(object sender, EventArgs e)
+        {
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("ADV_TURN", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            gameConnection.Open();
+            gameCommand.ExecuteNonQuery();
+            gameConnection.Close();
+            hideEverything();
         }
     }
 

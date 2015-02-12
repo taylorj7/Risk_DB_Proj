@@ -60,7 +60,7 @@
         <asp:TextBox ID="MoveTroopsNumber" runat="server" placeholder ="number of troops"></asp:TextBox>
         &nbsp; <asp:Button ID="MoveTroopsButton" runat="server" Text="Move" />
         <br />
-        <asp:Button ID="EndTurn" runat="server" Text="End Turn" />
+        <asp:Button ID="EndTurn" runat="server" Text="End Turn" OnClick="EndTurn_Click" />
     </div>
     </form>
 </body>
