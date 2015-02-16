@@ -32,7 +32,20 @@
     </table>
     
     </div>
+
     <div>
+        Hand
+        <br />
+        <table width="100%" align="center" cellpadding="2" cellspacing="2" border="0" bgcolor="#EAEAEA" >
+        <tr align="left" style="background-color:#004080;color:White;" >
+            <td> Card </td>                        
+            <td> Amount </td>              
+        </tr>
+
+        <%=getCards()%>
+
+    </table>
+        <br />
         <asp:Label ID="TurnLabel" runat="server" Text="It's not your turn yet!"></asp:Label>
         <br />
         <br />
