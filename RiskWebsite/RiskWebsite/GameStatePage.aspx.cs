@@ -72,6 +72,7 @@ namespace RiskWebsite
             myCountries = countries.ToArray();
             if (!IsPostBack)
             {
+                getPlaceTroops();
                 YourCountriesAttack.DataSource = myCountries;
                 YourCountriesAttack.DataBind();
                 YourCountriesMove.DataSource = myCountries;
@@ -79,7 +80,7 @@ namespace RiskWebsite
                 YourCountriesPlace.DataSource = myCountries;
                 YourCountriesPlace.DataBind();
             }
-            
+            RemainingTroops.Text = "" + Application["troops"];
         }
         public string getWhileLoopData()
         {
@@ -304,6 +305,11 @@ namespace RiskWebsite
             
         }
 
+        private void getPlaceTroops()
+        {
+            Application["troops"] = 10;
+        }
+
         private int calculateMaxIndex(ArrayList list) {
             if (list.Count == 0)
             {
@@ -350,7 +356,7 @@ namespace RiskWebsite
             thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
             thisConnection.Open();
             SqlDataReader reader = thisCommand.ExecuteReader();
-
+            int maxTroops = (int) Application["troops"];
             while (reader.Read())
             {
                 turn = reader.GetInt16(0);
@@ -358,6 +364,18 @@ namespace RiskWebsite
                 {
                     hideEverything();
                 }
+            }
+            if (maxTroops != 0)
+            {
+                AttackButton.Visible = false;
+                EndTurn.Visible = false;
+                MoveTroopsButton.Visible = false;
+            }
+            else
+            {
+                AttackButton.Visible = true;
+                EndTurn.Visible = true;
+                MoveTroopsButton.Visible = true;
             }
         }
         protected void hideEverything() {
@@ -369,7 +387,7 @@ namespace RiskWebsite
             YourCountriesMove.Visible = false;
             YourCountriesPlace.Visible = false;
             BorderingCountriesAttack.Visible = false;
-            TextBox1.Visible = false;
+            PlaceTextBox.Visible = false;
             PlaceButton.Visible = false;
             MoveTroopsButton.Visible = false;
             MoveTroopsNumber.Visible = false;
@@ -388,10 +406,37 @@ namespace RiskWebsite
             hideEverything();
         }
 
-        protected void PlaceButton_Click(object sender, EventArgs e)
+        protected void PlaceButton_Click1(object sender, EventArgs e)
         {
+
+            string yourCountry = YourCountriesPlace.SelectedValue;
+            int troops = Convert.ToInt32(PlaceTextBox.Text);
+            int placeTroops = (int) Application["troops"];
+            setupDropDownLists();
+            if (troops < 0 || troops > placeTroops)
+            {
+                PlaceLabel.Text = "You can't place that many troops";
+                return;
+            }
+
             SqlConnection gameConnection = new SqlConnection(connectionString);
             SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+            gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] + troops)));
+            gameConnection.Open();
+            gameCommand.ExecuteNonQuery();
+            gameConnection.Close();
+            Application["troops"] = placeTroops - troops;
+            if (placeTroops - troops == 0)
+            {
+                AttackButton.Visible = true;
+                EndTurn.Visible = true;
+                MoveTroopsButton.Visible = true;
+            }
+            setupDropDownLists();
         }
 
 
@@ -415,7 +460,6 @@ namespace RiskWebsite
         {
 
         }
-
 
     }
 

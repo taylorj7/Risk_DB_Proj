@@ -76,13 +76,13 @@ namespace RiskWebsite {
         protected global::System.Web.UI.WebControls.DropDownList YourCountriesPlace;
         
         /// <summary>
-        /// TextBox1 control.
+        /// PlaceTextBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
+        protected global::System.Web.UI.WebControls.TextBox PlaceTextBox;
         
         /// <summary>
         /// PlaceButton control.
@@ -92,6 +92,15 @@ namespace RiskWebsite {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button PlaceButton;
+        
+        /// <summary>
+        /// PlaceLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label PlaceLabel;
         
         /// <summary>
         /// YourCountriesAttack control.

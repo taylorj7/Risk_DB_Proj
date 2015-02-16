@@ -40,8 +40,10 @@
         <asp:Label ID="RemainingTroops" runat="server" Text="0"></asp:Label>
 &nbsp; remaining<br />
         <asp:DropDownList ID="YourCountriesPlace" runat="server" OnSelectedIndexChanged="YourCountriesPlace_SelectedIndexChanged"></asp:DropDownList> &nbsp;
-        <asp:TextBox ID="TextBox1" runat="server" placeholder ="number of troops"></asp:TextBox>
-        &nbsp; <asp:Button ID="PlaceButton" runat="server" Text="Place" />
+        <asp:TextBox ID="PlaceTextBox" runat="server" placeholder ="number of troops"></asp:TextBox>
+        &nbsp; <asp:Button ID="PlaceButton" runat="server" Text="Place" OnClick="PlaceButton_Click1" />&nbsp;
+        
+        <asp:Label ID="PlaceLabel" runat="server" Text=""></asp:Label>
          <br />
         <br />
         Attack 
