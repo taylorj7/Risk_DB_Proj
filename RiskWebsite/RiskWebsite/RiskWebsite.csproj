@@ -168,6 +168,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="CreateAccountPage.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="ForgotPasswordPage1.aspx" />
     <Content Include="GameDisplayPage.aspx" />
     <Content Include="GameStatePage.aspx" />
     <Content Include="HtmlPage1.html" />
@@ -361,6 +362,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ForgotPasswordPage1.aspx.cs">
+      <DependentUpon>ForgotPasswordPage1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ForgotPasswordPage1.aspx.designer.cs">
+      <DependentUpon>ForgotPasswordPage1.aspx</DependentUpon>
     </Compile>
     <Compile Include="GameDisplayPage.aspx.cs">
       <DependentUpon>GameDisplayPage.aspx</DependentUpon>

@@ -25,7 +25,7 @@
         <asp:Button ID="Button1" runat="server" Text="Login" OnClick="Button1_Click" />
     
         <br />
-        <a href="CreateAccountPage">Sign-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="~/ForgotPassword">Forgot-Password</a><br />
+        <a href="CreateAccountPage">Sign-Up</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="ForgotPasswordPage1">Forgot-Password</a><br />
     
     </div>
     </form>
