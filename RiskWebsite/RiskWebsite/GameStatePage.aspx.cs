@@ -70,6 +70,10 @@ namespace RiskWebsite
 
             thisConnection.Close();
             myCountries = countries.ToArray();
+            if (!IsPostBack)
+            {
+                Application["conquered"] = false;
+            }
             if (!IsPostBack || redoList)
             {
                 Application["troops"] = 0;
@@ -306,6 +310,7 @@ namespace RiskWebsite
             else
             {
                 AttackResult.Text += "You conquered " + defendingCountry;
+                Application["conquered"] = true;
                 defendLoss = 0; //made zero since we are going to do the conquer query, don't need to update the defending country.
                 //sql query to conquer country, subtract add one to attack loss
                 SqlConnection gameConnection3 = new SqlConnection(connectionString);
@@ -520,6 +525,10 @@ namespace RiskWebsite
         }
         protected void EndTurn_Click(object sender, EventArgs e)
         {
+            int random = (new Random()).Next(4);
+            if(!((Boolean) Application["conquered"])) {
+                random = 5;
+            }
             SqlConnection gameConnection = new SqlConnection(connectionString);
             SqlCommand gameCommand = new SqlCommand("ADV_TURN", gameConnection);
             gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
@@ -527,7 +536,7 @@ namespace RiskWebsite
 
             gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
 
-            gameCommand.Parameters.Add(new SqlParameter("@Random", (new Random()).Next(4)));
+            gameCommand.Parameters.Add(new SqlParameter("@Random", random));
             gameConnection.Open();
             gameCommand.ExecuteNonQuery();
             gameConnection.Close();
