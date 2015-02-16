@@ -39,7 +39,7 @@
         Place Troops&nbsp;&nbsp;&nbsp;
         <asp:Label ID="RemainingTroops" runat="server" Text="0"></asp:Label>
 &nbsp; remaining<br />
-        <asp:DropDownList ID="YourCountriesPlace" runat="server" OnSelectedIndexChanged="YourCountriesPlace_SelectedIndexChanged"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourCountriesPlace" runat="server"></asp:DropDownList> &nbsp;
         <asp:TextBox ID="PlaceTextBox" runat="server" placeholder ="number of troops"></asp:TextBox>
         &nbsp; <asp:Button ID="PlaceButton" runat="server" Text="Place" OnClick="PlaceButton_Click1" />&nbsp;
         
@@ -57,8 +57,8 @@
         <br />
         Move Troops 
         <br />
-        <asp:DropDownList ID="YourCountriesMove" runat="server" OnSelectedIndexChanged="YourCountriesMove_SelectedIndexChanged"></asp:DropDownList> &nbsp;
-        <asp:DropDownList ID="YourBorderingCountriesMove" runat="server" OnSelectedIndexChanged="YourBorderingCountriesMove_SelectedIndexChanged"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourCountriesMove" runat="server" autoPostBack="true" OnSelectedIndexChanged="YourCountriesMove_SelectedIndexChanged"></asp:DropDownList> &nbsp;
+        <asp:DropDownList ID="YourBorderingCountriesMove" runat="server"></asp:DropDownList> &nbsp;
         <asp:TextBox ID="MoveTroopsNumber" runat="server" placeholder ="number of troops"></asp:TextBox>
         &nbsp; <asp:Button ID="MoveTroopsButton" runat="server" Text="Move" OnClick="MoveTroopsButton_Click" />
         <br />

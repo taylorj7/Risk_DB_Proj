@@ -191,7 +191,6 @@ namespace RiskWebsite
             }
             BorderingCountriesAttack.DataSource = borderCountries.ToArray();
             BorderingCountriesAttack.DataBind();
-            AttackResult.Text = ("Changed index " + (YourCountriesAttack.SelectedItem.Value.ToString()));
         }
 
         protected void AttackButton_Click(object sender, EventArgs e)
@@ -443,22 +442,54 @@ namespace RiskWebsite
 
         protected void MoveTroopsButton_Click(object sender, EventArgs e)
         {
+            string yourCountry = YourCountriesMove.SelectedValue;
+            string borderCountry = YourBorderingCountriesMove.SelectedValue;
+            int troops = Convert.ToInt32(MoveTroopsNumber.Text);
+            setupDropDownLists();
+            if (troops < 0 || troops > countryTroops[yourCountry])
+            {
+                PlaceLabel.Text = "You can't move that many troops";
+                return;
+            }
 
-        }
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+            gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] - troops)));
+            gameConnection.Open();
+            gameCommand.ExecuteNonQuery();
+            gameConnection.Close();
 
-        protected void YourCountriesPlace_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            SqlConnection gameConnection2 = new SqlConnection(connectionString);
+            SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
+            gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand2.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+            gameCommand2.Parameters.Add(new SqlParameter("@Country", borderCountry));
+            gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+            gameCommand2.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[borderCountry] + troops)));
+            gameConnection2.Open();
+            gameCommand2.ExecuteNonQuery();
+            gameConnection2.Close();
+            setupDropDownLists();
         }
 
         protected void YourCountriesMove_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ArrayList borderCountries = getBorderingCountries(YourCountriesMove.SelectedItem.Value);
+            for (int i = 0; i < borderCountries.Count; i++)
+            {
+                if ((int)Application["id"] != countryOwners[((string)borderCountries[i])])
+                {
+                    borderCountries.RemoveAt(i);
+                    i--;
+                }
+            }
 
-        }
-
-        protected void YourBorderingCountriesMove_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            YourBorderingCountriesMove.DataSource = borderCountries.ToArray();
+            YourBorderingCountriesMove.DataBind();
         }
 
     }
