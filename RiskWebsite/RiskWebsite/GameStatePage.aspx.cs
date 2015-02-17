@@ -419,7 +419,19 @@ namespace RiskWebsite
 
         private void getPlaceTroops()
         {
+
             int bonus = this.turnInTroops();
+            SqlConnection gameConnection = new SqlConnection(connectionString);
+            SqlCommand gameCommand = new SqlCommand("getBonus", gameConnection);
+            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+            gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            gameCommand.Parameters.Add(new SqlParameter("@Bonus", System.Data.SqlDbType.Int));
+            gameCommand.Parameters["@Bonus"].Direction = System.Data.ParameterDirection.Output;
+            gameConnection.Open();
+            gameCommand.ExecuteNonQuery();
+            bonus += (int)Convert.ToInt32(gameCommand.Parameters["@Bonus"].Value);
+            gameConnection.Close();
             int countryCount = 0;
             int[] owners = countryOwners.Values.ToArray();
             for (int i = 0; i < owners.Length; i++ )
