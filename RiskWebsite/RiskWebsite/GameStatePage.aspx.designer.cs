@@ -31,6 +31,15 @@ namespace RiskWebsite {
         protected global::System.Web.UI.WebControls.Label GameIDLabel;
         
         /// <summary>
+        /// UserIDLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label UserIDLabel;
+        
+        /// <summary>
         /// StartButton control.
         /// </summary>
         /// <remarks>

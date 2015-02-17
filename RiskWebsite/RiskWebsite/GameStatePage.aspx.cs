@@ -28,6 +28,7 @@ namespace RiskWebsite
             connectionString = csBuilder.ToString();
             setupDropDownLists(false);
             GameIDLabel.Text = "" + Application["game"];
+            UserIDLabel.Text = "" + Application["id"];
             
             if ((Boolean)Application["gameStarted"])
             {
@@ -36,7 +37,7 @@ namespace RiskWebsite
             }
             else
             {
-                hideEverything();
+                hideEverything(false);
             }
         }
 
@@ -184,7 +185,14 @@ namespace RiskWebsite
             startCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
             startCommand.CommandType = System.Data.CommandType.StoredProcedure;
             startConnection.Open();
-            startCommand.ExecuteNonQuery();
+            try
+            {
+                startCommand.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+
+            }
             startConnection.Close();
             while (countryNames.Count > 0)
             {
@@ -208,7 +216,28 @@ namespace RiskWebsite
                 }
             }
             StartButton.Visible = false;
-            
+            SqlConnection thisConnection2 = new SqlConnection(connectionString);
+            SqlCommand thisCommand2 = new SqlCommand("Get Active Games", thisConnection2);
+            thisCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand2.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
+            thisConnection2.Open();
+            SqlDataReader reader2 = thisCommand2.ExecuteReader();
+
+            while (reader2.Read())
+            {
+
+                int id = reader2.GetInt32(1);
+                int CurrentPosition = reader2.GetInt16(0);
+                if (id == ((int)Application["game"]))
+                {
+                    Application["turn"] = CurrentPosition;
+                }
+            }
+
+            thisConnection2.Close();
+            setupDropDownLists(true);
+            Application["conquered"] = false;
+            hitStart();
         }
 
         protected void YourCountriesAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -480,6 +509,54 @@ namespace RiskWebsite
             return borderCountries;
         }
 
+        private void hitStart()
+        {
+            TurnLabel.Text = "It is your turn!";
+            int turn;
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            thisConnection.Open();
+            SqlDataReader reader = thisCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                turn = reader.GetInt16(0);
+                if (turn != (int)Application["turn"])
+                {
+                    hideEverything(false);
+                    return;
+                }
+            }
+            getPlaceTroops();
+            RemainingTroops.Text = "" + Application["troops"];
+            int maxTroops = (int)Application["troops"];
+            AttackButton.Visible = true;
+            AttackResult.Visible = true;
+            YourBorderingCountriesMove.Visible = true;
+            YourCountriesAttack.Visible = true;
+            YourCountriesMove.Visible = true;
+            YourCountriesPlace.Visible = true;
+            BorderingCountriesAttack.Visible = true;
+            PlaceTextBox.Visible = true;
+            PlaceButton.Visible = true;
+            MoveTroopsButton.Visible = true;
+            MoveTroopsNumber.Visible = true;
+            EndTurn.Visible = true;
+            if (maxTroops != 0)
+            {
+                AttackButton.Visible = false;
+                EndTurn.Visible = false;
+                MoveTroopsButton.Visible = false;
+            }
+            else
+            {
+                AttackButton.Visible = true;
+                EndTurn.Visible = true;
+                MoveTroopsButton.Visible = true;
+            }
+        }
         private void hideTurnFields()
         {
             TurnLabel.Text = "It is your turn!";
@@ -496,7 +573,7 @@ namespace RiskWebsite
                 turn = reader.GetInt16(0);
                 if (turn != (int)Application["turn"])
                 {
-                    hideEverything();
+                    hideEverything(false);
                     return;
                 }
             }
@@ -519,20 +596,36 @@ namespace RiskWebsite
                 MoveTroopsButton.Visible = true;
             }
         }
-        protected void hideEverything() {
-            TurnLabel.Text = "It is not your turn!";
-            AttackButton.Visible = false;
-            AttackResult.Visible = false;
-            YourBorderingCountriesMove.Visible = false;
-            YourCountriesAttack.Visible = false;
-            YourCountriesMove.Visible = false;
-            YourCountriesPlace.Visible = false;
-            BorderingCountriesAttack.Visible = false;
-            PlaceTextBox.Visible = false;
-            PlaceButton.Visible = false;
-            MoveTroopsButton.Visible = false;
-            MoveTroopsNumber.Visible = false;
-            EndTurn.Visible = false;
+        protected void hideEverything(Boolean alwaysHide) {
+            SqlConnection thisConnection = new SqlConnection(connectionString);
+            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            thisConnection.Open();
+            SqlDataReader reader = thisCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                int turn = reader.GetInt16(0);
+                if (alwaysHide || turn != (int)Application["turn"])
+                {
+                    TurnLabel.Text = "It is not your turn!";
+                    AttackButton.Visible = false;
+                    AttackResult.Visible = false;
+                    YourBorderingCountriesMove.Visible = false;
+                    YourCountriesAttack.Visible = false;
+                    YourCountriesMove.Visible = false;
+                    YourCountriesPlace.Visible = false;
+                    BorderingCountriesAttack.Visible = false;
+                    PlaceTextBox.Visible = false;
+                    PlaceButton.Visible = false;
+                    MoveTroopsButton.Visible = false;
+                    MoveTroopsNumber.Visible = false;
+                    EndTurn.Visible = false;
+                    return;
+                }
+            }
+            
                     
         }
         protected void EndTurn_Click(object sender, EventArgs e)
@@ -552,7 +645,7 @@ namespace RiskWebsite
             gameConnection.Open();
             gameCommand.ExecuteNonQuery();
             gameConnection.Close();
-            hideEverything();
+            hideEverything(true);
         }
 
         protected void PlaceButton_Click1(object sender, EventArgs e)
