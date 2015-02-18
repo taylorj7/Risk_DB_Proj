@@ -646,6 +646,22 @@ namespace RiskWebsite
             gameConnection.Open();
             gameCommand.ExecuteNonQuery();
             gameConnection.Close();
+
+            SqlConnection gameConnection2 = new SqlConnection(connectionString);
+            SqlCommand gameCommand2 = new SqlCommand("isWinner", gameConnection2);
+            gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+            gameCommand2.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+            gameCommand2.Parameters.Add(new SqlParameter("@UserID", System.Data.SqlDbType.Int));
+            gameCommand2.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
+            gameConnection2.Open();
+            gameCommand2.ExecuteNonQuery();
+
+            int winner = (int)Convert.ToInt32(gameCommand.Parameters["@UserID"].Value);
+            if (winner != 0)
+            {
+                TurnLabel.Text = "Game Over. User: " + winner + " won!";
+            }
+            gameConnection2.Close();
             hideEverything(true);
         }
 
