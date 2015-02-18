@@ -199,20 +199,27 @@ namespace RiskWebsite
                 string country = (string) countryNames[rand.Next(countryNames.Count)];
                 countryNames.Remove(country);
                 int player = (int)players[playerIndex];
-                SqlConnection gameConnection = new SqlConnection(connectionString);
-                SqlCommand gameCommand = new SqlCommand("ADD_cOuNtry_NeW_gamE", gameConnection);
-                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                gameCommand.Parameters.Add(new SqlParameter("@UserID", player));
-                gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-                gameCommand.Parameters.Add(new SqlParameter("@Country", country));
-                gameCommand.Parameters.Add(new SqlParameter("@troopCount", troopCount));
-                gameConnection.Open();
-                gameCommand.ExecuteNonQuery();
-                gameConnection.Close();
-                playerIndex++;
-                if (playerIndex == numPlayers)
+                try
                 {
-                    playerIndex = 0;
+                    SqlConnection gameConnection = new SqlConnection(connectionString);
+                    SqlCommand gameCommand = new SqlCommand("ADD_cOuNtry_NeW_gamE", gameConnection);
+                    gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    gameCommand.Parameters.Add(new SqlParameter("@UserID", player));
+                    gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                    gameCommand.Parameters.Add(new SqlParameter("@Country", country));
+                    gameCommand.Parameters.Add(new SqlParameter("@troopCount", troopCount));
+                    gameConnection.Open();
+                    gameCommand.ExecuteNonQuery();
+                    gameConnection.Close();
+                    playerIndex++;
+                    if (playerIndex == numPlayers)
+                    {
+                        playerIndex = 0;
+                    }
+                }
+                catch (SqlException er1)
+                {
+
                 }
             }
             StartButton.Visible = false;
@@ -313,27 +320,34 @@ namespace RiskWebsite
 
             if (countryTroops[defendingCountry] > defendLoss)
             {
-                SqlConnection gameConnection = new SqlConnection(connectionString);
-                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
-                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
-                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
-                gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - attackLoss));
-                gameConnection.Open();
-                gameCommand.ExecuteNonQuery();
-                gameConnection.Close();
+                try
+                {
+                    SqlConnection gameConnection = new SqlConnection(connectionString);
+                    SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                    gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
+                    gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                    gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                    gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - attackLoss));
+                    gameConnection.Open();
+                    gameCommand.ExecuteNonQuery();
+                    gameConnection.Close();
 
-                SqlConnection gameConnection2 = new SqlConnection(connectionString);
-                SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
-                gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
-                gameCommand2.Parameters.Add(new SqlParameter("@Owner", countryOwners[defendingCountry]));
-                gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-                gameCommand2.Parameters.Add(new SqlParameter("@Country", defendingCountry));
-                gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[defendingCountry] - defendLoss));
-                gameConnection2.Open();
-                gameCommand2.ExecuteNonQuery();
-                gameConnection2.Close();
+                    SqlConnection gameConnection2 = new SqlConnection(connectionString);
+                    SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
+                    gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+                    gameCommand2.Parameters.Add(new SqlParameter("@Owner", countryOwners[defendingCountry]));
+                    gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                    gameCommand2.Parameters.Add(new SqlParameter("@Country", defendingCountry));
+                    gameCommand2.Parameters.Add(new SqlParameter("@newTroops", countryTroops[defendingCountry] - defendLoss));
+                    gameConnection2.Open();
+                    gameCommand2.ExecuteNonQuery();
+                    gameConnection2.Close();
+                }
+                catch (SqlException er)
+                {
+
+                }
                 AttackResult.Text = yourCountry + " lost " + attackLoss + " troops and " + defendingCountry + " lost " + defendLoss + " troops ";
             }
             else
