@@ -622,6 +622,7 @@ namespace RiskWebsite
                     MoveTroopsButton.Visible = false;
                     MoveTroopsNumber.Visible = false;
                     EndTurn.Visible = false;
+                    MoveLabel.Text = "";
                     return;
                 }
             }
@@ -691,8 +692,12 @@ namespace RiskWebsite
             setupDropDownLists(false);
             if (troops < 0 || troops >= countryTroops[yourCountry])
             {
-                PlaceLabel.Text = "You can't move that many troops";
+                MoveLabel.Text = "You can't move that many troops";
                 return;
+            }
+            else
+            {
+                MoveLabel.Text = "";
             }
 
             SqlConnection gameConnection = new SqlConnection(connectionString);

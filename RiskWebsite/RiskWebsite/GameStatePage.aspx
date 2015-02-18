@@ -78,6 +78,7 @@
         <asp:TextBox ID="MoveTroopsNumber" runat="server" placeholder ="number of troops"></asp:TextBox>
         <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="MoveTroopsNumber" runat="server" ErrorMessage="Only Numbers allowed" ValidationExpression="\d+"></asp:RegularExpressionValidator>
         &nbsp; <asp:Button ID="MoveTroopsButton" runat="server" Text="Move" OnClick="MoveTroopsButton_Click" />
+        <asp:Label ID="MoveLabel" runat="server" Text=""></asp:Label>
         <br />
         <asp:Button ID="EndTurn" runat="server" Text="End Turn" OnClick="EndTurn_Click" />
     </div>
