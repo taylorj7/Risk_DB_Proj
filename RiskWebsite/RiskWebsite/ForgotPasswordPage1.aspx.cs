@@ -16,9 +16,9 @@ namespace RiskWebsite
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            String username = UsernameTextBox.Text;
-            String password = PasswordTextBox.Text;
-            String phrase = PhraseTextBox.Text;
+            String username = UsernameTextBox.Text.Trim();
+            String password = PasswordTextBox.Text.Trim();
+            String phrase = PhraseTextBox.Text.Trim();
             SqlConnectionStringBuilder csBuilder = new SqlConnectionStringBuilder();
             csBuilder.DataSource = "titan.csse.rose-hulman.edu";
             csBuilder.InitialCatalog = "Risk42";

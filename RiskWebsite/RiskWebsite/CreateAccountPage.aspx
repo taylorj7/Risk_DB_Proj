@@ -9,7 +9,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        Please enter a username, password, and confirmation phrase for your account. The phrase can be used if you forget your password.<br />
+        <p>Please enter a username, password, and confirmation phrase for your account. The phrase can be used if you forget your password.</p>
+        <p>The username must be less than 10 characters, else we will make it 10 characters!</p>
+        <br />
         <br />
      <asp:Label ID ="UsernameLabel" runat="server" Text="Username: "></asp:Label>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="Label1" runat="server" Text="Password: "></asp:Label>

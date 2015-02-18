@@ -31,9 +31,11 @@
         Friend Username:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GameID:
         <br />
         <asp:TextBox ID="UsernameTextBox" runat="server"></asp:TextBox>
+
         &nbsp;&nbsp;&nbsp;
         <asp:TextBox ID="GameIDTextBox" runat="server"></asp:TextBox>
-    
+    <asp:RegularExpressionValidator ID="RegularExpressionValidator2" ControlToValidate="GameIDTextBox" runat="server" ErrorMessage="Only Numbers allowed" ValidationExpression="\d+"></asp:RegularExpressionValidator>
+        
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="AddUserButton" runat="server" Text="Add User" OnClick="AddUserButton_Click" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -43,6 +45,8 @@
         Enter Game:<br />
         GameID:<br />
         <asp:TextBox ID="GameIDTextBox2" runat="server"></asp:TextBox>
+        <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="GameIDTextBox2" runat="server" ErrorMessage="Only Numbers allowed" ValidationExpression="\d+"></asp:RegularExpressionValidator>
+        
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="EnterGameButton" runat="server" Text="Enter Game" OnClick="EnterGameButton_Click" />
     </div>

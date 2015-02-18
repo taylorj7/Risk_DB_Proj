@@ -58,7 +58,7 @@
         <asp:DropDownList ID="YourCountriesPlace" runat="server"></asp:DropDownList> &nbsp;
         <asp:TextBox ID="PlaceTextBox" runat="server" placeholder ="number of troops"></asp:TextBox>
         &nbsp; <asp:Button ID="PlaceButton" runat="server" Text="Place" OnClick="PlaceButton_Click1" />&nbsp;
-        
+        <asp:RegularExpressionValidator ID="RegularExpressionValidator2" ControlToValidate="PlaceTextBox" runat="server" ErrorMessage="Only Numbers allowed" ValidationExpression="\d+"></asp:RegularExpressionValidator>
         <asp:Label ID="PlaceLabel" runat="server" Text=""></asp:Label>
          <br />
         <br />
@@ -76,6 +76,7 @@
         <asp:DropDownList ID="YourCountriesMove" runat="server" autoPostBack="true" OnSelectedIndexChanged="YourCountriesMove_SelectedIndexChanged"></asp:DropDownList> &nbsp;
         <asp:DropDownList ID="YourBorderingCountriesMove" runat="server"></asp:DropDownList> &nbsp;
         <asp:TextBox ID="MoveTroopsNumber" runat="server" placeholder ="number of troops"></asp:TextBox>
+        <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="MoveTroopsNumber" runat="server" ErrorMessage="Only Numbers allowed" ValidationExpression="\d+"></asp:RegularExpressionValidator>
         &nbsp; <asp:Button ID="MoveTroopsButton" runat="server" Text="Move" OnClick="MoveTroopsButton_Click" />
         <br />
         <asp:Button ID="EndTurn" runat="server" Text="End Turn" OnClick="EndTurn_Click" />

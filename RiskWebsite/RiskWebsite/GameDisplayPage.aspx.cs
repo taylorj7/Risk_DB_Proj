@@ -83,7 +83,7 @@ namespace RiskWebsite
             SqlCommand thisCommand = new SqlCommand("add To Game", thisConnection);
             thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
             thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Username", UsernameTextBox.Text));
+            thisCommand.Parameters.Add(new SqlParameter("@Username", UsernameTextBox.Text.Trim()));
             thisCommand.Parameters.Add(new SqlParameter("@Game_id", Convert.ToInt32(GameIDTextBox.Text)));
             thisCommand.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
 
