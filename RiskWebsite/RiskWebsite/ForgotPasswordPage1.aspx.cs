@@ -27,33 +27,39 @@ namespace RiskWebsite
             csBuilder.UserID = "333Winter2014Risk";
             csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
-
-            using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+            try
             {
-                SqlCommand comm = new SqlCommand("FoRGottEN PAssword", conn);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.Add(new SqlParameter("@Username", username.Trim()));
-                comm.Parameters.Add(new SqlParameter("@NewPass", (username.Trim() + password.Trim()).GetHashCode()));
-                comm.Parameters.Add(new SqlParameter("@Confirmation", (username.Trim() + phrase.Trim()).GetHashCode()));
-                comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
-
-                conn.Open();
-                comm.ExecuteNonQuery();
-
-
-                int returnval = (int)comm.Parameters["ReturnVal"].Value;
-                conn.Close();
-                if (returnval == 1)
+                using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
                 {
+                    SqlCommand comm = new SqlCommand("FoRGottEN PAssword", conn);
+                    comm.CommandType = System.Data.CommandType.StoredProcedure;
+                    comm.Parameters.Add(new SqlParameter("@Username", username.Trim()));
+                    comm.Parameters.Add(new SqlParameter("@NewPass", (username.Trim() + password.Trim()).GetHashCode()));
+                    comm.Parameters.Add(new SqlParameter("@Confirmation", (username.Trim() + phrase.Trim()).GetHashCode()));
+                    comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
 
-                    SuccessLabel.Text = "Failed to change password";
+                    conn.Open();
+                    comm.ExecuteNonQuery();
 
+
+                    int returnval = (int)comm.Parameters["ReturnVal"].Value;
+                    conn.Close();
+                    if (returnval == 1)
+                    {
+
+                        SuccessLabel.Text = "Failed to change password";
+
+                    }
+                    else
+                    {
+
+                        SuccessLabel.Text = "Successfully changed password";
+                    }
                 }
-                else
-                {
+            }
+            catch (SqlException error)
+            {
 
-                    SuccessLabel.Text = "Successfully changed password";
-                }
             }
         }
     }

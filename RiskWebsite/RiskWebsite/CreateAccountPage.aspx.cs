@@ -36,23 +36,29 @@ namespace RiskWebsite
                 comm.Parameters.Add(new SqlParameter("@Password", (username.Trim()+password.Trim()).GetHashCode()));
                 comm.Parameters.Add(new SqlParameter("@Phrase", (username.Trim() + phrase.Trim()).GetHashCode()));
                 comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
-
-                conn.Open();
-                comm.ExecuteNonQuery();
-
-
-                int returnval = (int)comm.Parameters["ReturnVal"].Value;
-                conn.Close();
-                if (returnval == 0)
+                try
                 {
+                    conn.Open();
+                    comm.ExecuteNonQuery();
 
-                    SuccessLabel.Text = "Failed to created account";
 
+                    int returnval = (int)comm.Parameters["ReturnVal"].Value;
+                    conn.Close();
+                    if (returnval == 0)
+                    {
+
+                        SuccessLabel.Text = "Failed to created account";
+
+                    }
+                    else
+                    {
+
+                        SuccessLabel.Text = "Successfully created account";
+                    }
                 }
-                else
+                catch (SqlException error)
                 {
 
-                    SuccessLabel.Text = "Successfully created account";
                 }
             }
         }

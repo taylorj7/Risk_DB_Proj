@@ -29,25 +29,32 @@ namespace RiskWebsite
             csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
             string htmlStr = "";
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("Get Active Games", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
+            try
+            {
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("Get Active Games", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
 
-        while (reader.Read())
-        {
+                while (reader.Read())
+                {
 
-            int id = reader.GetInt32(1);
-            int CurrentPosition = reader.GetInt16(0);
-            Boolean started = reader.GetBoolean(2);
-            gameStarted.Add(id, started);
-            gameTurn.Add(id, CurrentPosition);
-            htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td><td>" + started + "</td></tr>";                  
-        }
+                    int id = reader.GetInt32(1);
+                    int CurrentPosition = reader.GetInt16(0);
+                    Boolean started = reader.GetBoolean(2);
+                    gameStarted.Add(id, started);
+                    gameTurn.Add(id, CurrentPosition);
+                    htmlStr += "<tr><td>" + id + "</td><td>" + CurrentPosition + "</td><td>" + started + "</td></tr>";
+                }
 
-        thisConnection.Close();
+                thisConnection.Close();
+            }
+            catch (SqlException e)
+            {
+
+            }
         return htmlStr;
 }
 
@@ -61,12 +68,19 @@ namespace RiskWebsite
             csBuilder.UserID = "333Winter2014Risk";
             csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("Create Game", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
-            thisConnection.Open();
-            thisCommand.ExecuteNonQuery();
+            try
+            {
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("Create Game", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
+                thisConnection.Open();
+                thisCommand.ExecuteNonQuery();
+            }
+            catch (SqlException error)
+            {
+
+            }
         }
 
         protected void AddUserButton_Click(object sender, EventArgs e)
@@ -79,36 +93,45 @@ namespace RiskWebsite
             csBuilder.UserID = "333Winter2014Risk";
             csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("add To Game", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Username", UsernameTextBox.Text.Trim()));
-            thisCommand.Parameters.Add(new SqlParameter("@Game_id", Convert.ToInt32(GameIDTextBox.Text)));
-            thisCommand.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
-
-            thisConnection.Open();
-            thisCommand.ExecuteNonQuery();
-
-            int returnval = (int)thisCommand.Parameters["ReturnVal"].Value;
-            thisConnection.Close();
-            if (returnval == 0)
+            try
             {
-                Label1.Text = "User added successfully!";
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("add To Game", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Username", UsernameTextBox.Text.Trim()));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_id", Convert.ToInt32(GameIDTextBox.Text)));
+                thisCommand.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
+
+                thisConnection.Open();
+                thisCommand.ExecuteNonQuery();
+
+                int returnval = (int)thisCommand.Parameters["ReturnVal"].Value;
+                thisConnection.Close();
+                if (returnval == 0)
+                {
+                    Label1.Text = "User added successfully!";
+                }
+                else
+                {
+                    Label1.Text = "User failed to be added";
+                }
             }
-            else
+            catch (SqlException error)
             {
-                Label1.Text = "User failed to be added";
+
             }
         }
 
         protected void EnterGameButton_Click(object sender, EventArgs e)
         {
             int gameID = Convert.ToInt32(GameIDTextBox2.Text);
+            if (gameStarted.ContainsKey(gameID)) {
             Application["game"] = gameID;
             Application["gameStarted"] = gameStarted[gameID];
             Application["turn"] = gameTurn[gameID];
             Response.Redirect("~/GameStatePage");
+            }
 
         }
     }
