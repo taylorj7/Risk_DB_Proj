@@ -11,6 +11,19 @@ GO
 SET ANSI_PADDING ON
 GO
 
+CREATE TABLE [dbo].[Users](
+	[User_id] [int] IDENTITY(1,1) NOT NULL,
+	[Username] [varchar](10) NOT NULL,
+	[Password] [int] NOT NULL,
+	[Phrase] [int] NOT NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[User_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
 CREATE TABLE [dbo].[Continents](
 	[Name] [varchar](15) NOT NULL,
 	[Bonus_Value] [smallint] NOT NULL,
@@ -67,7 +80,7 @@ GO
 USE [Risk42]
 GO
 
-/****** Object:  Table [dbo].[Games]    Script Date: 1/19/2015 4:58:05 PM ******/
+/****** Object:  Table [dbo].[Games]    Script Date: 2/18/2015 2:56:34 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -76,9 +89,10 @@ GO
 
 CREATE TABLE [dbo].[Games](
 	[Game_ID] [int] IDENTITY(1,1) NOT NULL,
-	[Current_Position] [smallint] NOT NULL,
-	[Sets_Submitted] [smallint] NOT NULL,
-	[Current_Turn] [int] NOT NULL,
+	[Current_Position] [smallint] NOT NULL CONSTRAINT [DF_Games_Current_Position]  DEFAULT ((0)),
+	[Sets_Submitted] [smallint] NOT NULL CONSTRAINT [DF_Games_Sets_Submitted]  DEFAULT ((0)),
+	[Current_Turn] [int] NOT NULL CONSTRAINT [DF_Games_Current_Turn]  DEFAULT ((1)),
+	[started] [bit] NULL CONSTRAINT [DF_Games_started]  DEFAULT ((0)),
  CONSTRAINT [PK_Games] PRIMARY KEY CLUSTERED 
 (
 	[Game_ID] ASC
@@ -87,20 +101,10 @@ CREATE TABLE [dbo].[Games](
 
 GO
 
-ALTER TABLE [dbo].[Games] ADD  CONSTRAINT [DF_Games_Current_Position]  DEFAULT ((0)) FOR [Current_Position]
-GO
-
-ALTER TABLE [dbo].[Games] ADD  CONSTRAINT [DF_Games_Sets_Submitted]  DEFAULT ((0)) FOR [Sets_Submitted]
-GO
-
-ALTER TABLE [dbo].[Games] ADD  CONSTRAINT [DF_Games_Current_Turn]  DEFAULT ((1)) FOR [Current_Turn]
-GO
-
-
 USE [Risk42]
 GO
 
-/****** Object:  Table [dbo].[Hand]    Script Date: 1/19/2015 4:58:16 PM ******/
+/****** Object:  Table [dbo].[Hand]    Script Date: 2/18/2015 2:57:11 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -109,8 +113,10 @@ GO
 
 CREATE TABLE [dbo].[Hand](
 	[Hand_ID] [int] IDENTITY(1,1) NOT NULL,
-	[Card_Type] [nchar](10) NOT NULL,
-	[Count] [smallint] NOT NULL,
+	[Soldier_Count] [smallint] NOT NULL,
+	[Horse_Count] [smallint] NOT NULL,
+	[Cannon_Count] [smallint] NOT NULL,
+	[Wild_Count] [smallint] NULL,
  CONSTRAINT [PK_Hand] PRIMARY KEY CLUSTERED 
 (
 	[Hand_ID] ASC
@@ -155,7 +161,7 @@ GO
 USE [Risk42]
 GO
 
-/****** Object:  Table [dbo].[Owns]    Script Date: 1/19/2015 4:58:28 PM ******/
+/****** Object:  Table [dbo].[Owns]    Script Date: 2/18/2015 2:58:22 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -193,10 +199,11 @@ ALTER TABLE [dbo].[Owns] CHECK CONSTRAINT [FK_Owns_Users]
 GO
 
 
+
 USE [Risk42]
 GO
 
-/****** Object:  Table [dbo].[Player_In]    Script Date: 1/19/2015 4:58:32 PM ******/
+/****** Object:  Table [dbo].[Player_In]    Script Date: 2/18/2015 2:59:11 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -247,17 +254,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[Users](
-	[User_id] [int] IDENTITY(1,1) NOT NULL,
-	[Username] [varchar](10) NOT NULL,
-	[Password] [varchar](10) NOT NULL,
- CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
-(
-	[User_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
 
-GO
 
 SET ANSI_PADDING OFF
 GO

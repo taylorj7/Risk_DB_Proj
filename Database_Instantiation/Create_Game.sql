@@ -9,8 +9,12 @@ BEGIN
 	INSERT INTO Games (Current_Position, Sets_Submitted, Current_Turn)
 	VALUES (0,0,0);
 	SET @max = (SELECT MAX(Game_ID) FROM Games)
-	INSERT INTO Player_In (Game_ID, [User_ID], Turn_Position)
-	VALUES (@max, @User_ID, 1);
+	INSERT INTO Hand
+	VALUES (0,0,0,0);
+	DECLARE @tempMax int
+	SET @tempMax = (SELECT MAX(Hand_ID) FROM Hand)
+	INSERT INTO Player_In (Game_ID, [User_ID], Turn_Position, Hand_ID)
+	VALUES (@max, @User_ID, 1, @tempMax);
 	return 0
 END
 return 1

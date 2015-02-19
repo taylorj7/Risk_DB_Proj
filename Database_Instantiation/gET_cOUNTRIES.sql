@@ -1,0 +1,8 @@
+USE [Risk42]
+GO
+CREATE PROC [gET_cOUNTRIES]
+AS
+SELECT Name FROM Country
+GO
+
+

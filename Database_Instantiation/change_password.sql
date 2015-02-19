@@ -1,7 +1,7 @@
 USE [Risk42]
 GO
 CREATE PROC [Change Password]
-(@User_id int, @Pass_Old varchar(10), @Pass_New varchar(10))
+(@User_id int, @Pass_Old int, @Pass_New int)
 AS
 IF @Pass_Old IN (SELECT [Password] FROM Users WHERE [User_id] = @User_id)
 BEGIN

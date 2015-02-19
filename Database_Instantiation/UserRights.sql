@@ -24,3 +24,33 @@ GO
 GRANT EXECUTE ON [getGameState]
 TO [333Winter2014Risk]
 GO
+GRANT EXECUTE ON [ADD_cOuNtry_NeW_gamE]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [gET_cOUNTRIES]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [GeT_gamerS]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [start_game]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [is_started]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [getUserTurnPosition]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [borderingCountries]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [Change_Country_Owner]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [Update_Garrison]
+TO [333Winter2014Risk]
+GO
+GRANT EXECUTE ON [ADV_TURN]
+TO [333Winter2014Risk]
+GO

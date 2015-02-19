@@ -1,7 +1,7 @@
 USE Risk42
 GO
 CREATE PROC [login]
-(@Username varchar(10), @Password varchar(10), @UserID int OUTPUT)
+(@Username varchar(10), @Password int, @UserID int OUTPUT)
 AS
 IF @Username NOT IN (SELECT Username FROM Users)
 BEGIN
