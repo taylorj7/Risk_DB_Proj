@@ -27,13 +27,14 @@ namespace RiskWebsite
             csBuilder.UserID = "333Winter2014Risk";
             csBuilder.Password = "Password123";
             String connectionString = csBuilder.ToString();
-            
-            using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+            try
             {
+                using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
                     SqlCommand comm = new SqlCommand("Login", conn);
                     comm.CommandType = System.Data.CommandType.StoredProcedure;
                     comm.Parameters.Add(new SqlParameter("@UserName", username.Trim()));
-                    comm.Parameters.Add(new SqlParameter("@Password", (username.Trim()+password.Trim()).GetHashCode()));
+                    comm.Parameters.Add(new SqlParameter("@Password", (username.Trim() + password.Trim()).GetHashCode()));
                     comm.Parameters.Add(new SqlParameter("@UserID", System.Data.SqlDbType.Int));
                     comm.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
                     comm.Parameters.Add(new SqlParameter("ReturnVal", System.Data.SqlDbType.Int)).Direction = System.Data.ParameterDirection.ReturnValue;
@@ -41,15 +42,20 @@ namespace RiskWebsite
                     conn.Open();
                     comm.ExecuteNonQuery();
 
-                    
+
                     int returnval = (int)comm.Parameters["ReturnVal"].Value;
                     conn.Close();
-                    if (returnval ==0)
+                    if (returnval == 0)
                     {
                         int id = (int)Convert.ToInt32(comm.Parameters["@UserID"].Value);
                         Application["id"] = id;
                         Response.Redirect("~/GameDisplayPage");
                     }
+                }
+            }
+            catch (SqlException error)
+            {
+
             }
            
         }

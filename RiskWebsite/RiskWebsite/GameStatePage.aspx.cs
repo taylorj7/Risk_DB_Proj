@@ -47,29 +47,36 @@ namespace RiskWebsite
             countryTroops.Clear();
             countryOwners.Clear();
             SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
+            try
+            {
+                SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
 
-            while (reader.Read())
+                while (reader.Read())
+                {
+
+                    int id = reader.GetInt32(0);
+                    int numSoldiers = reader.GetInt32(1);
+                    int userID = reader.GetInt32(2);
+                    string country = reader.GetString(3);
+                    countryTroops.Add(country, numSoldiers);
+                    countryOwners.Add(country, userID);
+                    if (userID == (int)Application["id"])
+                    {
+                        countries.Add(country);
+                    }
+                }
+
+                thisConnection.Close();
+            }
+            catch (SqlException error)
             {
 
-                int id = reader.GetInt32(0);
-                int numSoldiers = reader.GetInt32(1);
-                int userID = reader.GetInt32(2);
-                string country = reader.GetString(3);
-                countryTroops.Add(country, numSoldiers);
-                countryOwners.Add(country, userID);
-                if (userID == (int)Application["id"])
-                {
-                   countries.Add(country);
-                }
             }
-
-            thisConnection.Close();
             myCountries = countries.ToArray();
             if (!IsPostBack)
             {
@@ -93,52 +100,66 @@ namespace RiskWebsite
         public string getCards()
         {
             string htmlStr = "";
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getHand", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Game_ID", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                int soldier = reader.GetInt16(0);
-                int horse = reader.GetInt16(1);
-                int cannon = reader.GetInt16(2);                
-                int wild = reader.GetInt16(3);
-                htmlStr += "<tr><td>" + "soldier" + "</td><td>" + soldier + "</td></tr>";
-                htmlStr += "<tr><td>" + "horse" + "</td><td>" + horse + "</td></tr>";
-                htmlStr += "<tr><td>" + "cannon" + "</td><td>" + cannon + "</td></tr>";
-                htmlStr += "<tr><td>" + "wild" + "</td><td>" + wild + "</td></tr>";
-            }
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getHand", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_ID", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
 
-            thisConnection.Close();
+                while (reader.Read())
+                {
+                    int soldier = reader.GetInt16(0);
+                    int horse = reader.GetInt16(1);
+                    int cannon = reader.GetInt16(2);
+                    int wild = reader.GetInt16(3);
+                    htmlStr += "<tr><td>" + "soldier" + "</td><td>" + soldier + "</td></tr>";
+                    htmlStr += "<tr><td>" + "horse" + "</td><td>" + horse + "</td></tr>";
+                    htmlStr += "<tr><td>" + "cannon" + "</td><td>" + cannon + "</td></tr>";
+                    htmlStr += "<tr><td>" + "wild" + "</td><td>" + wild + "</td></tr>";
+                }
+
+                thisConnection.Close();
+            }
+            catch (SqlException error)
+            {
+
+            }
             return htmlStr;
         }
         public string getWhileLoopData()
         {
             
             string htmlStr = "";
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
+            try
+            {
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getGameState", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@User_id", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_id", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
 
-            while (reader.Read())
+                while (reader.Read())
+                {
+
+                    int id = reader.GetInt32(0);
+                    int numSoldiers = reader.GetInt32(1);
+                    int userID = reader.GetInt32(2);
+                    string country = reader.GetString(3);
+                    htmlStr += "<tr><td>" + country + "</td><td>" + userID + "</td><td>" + numSoldiers + "</td></tr>";
+                }
+
+                thisConnection.Close();
+            }
+            catch (SqlException error)
             {
 
-                int id = reader.GetInt32(0);
-                int numSoldiers = reader.GetInt32(1);
-                int userID = reader.GetInt32(2);
-                string country = reader.GetString(3);
-                htmlStr += "<tr><td>" + country + "</td><td>" + userID + "</td><td>" + numSoldiers + "</td></tr>";
             }
-
-            thisConnection.Close();
             return htmlStr;
         }
 
@@ -146,31 +167,44 @@ namespace RiskWebsite
         {
             ArrayList countryNames = new ArrayList();
             ArrayList players = new ArrayList();
-
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("gET_cOUNTRIES", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                string country = reader.GetString(0);
-                countryNames.Add(country);
-            }
-            thisConnection.Close();
-            SqlConnection playerConnection = new SqlConnection(connectionString);
-            SqlCommand playerCommand = new SqlCommand("GeT_gamerS", playerConnection);
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("gET_cOUNTRIES", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
 
-            playerCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            playerCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            playerConnection.Open();
-            SqlDataReader playerReader = playerCommand.ExecuteReader();
-            while (playerReader.Read())
-            {
-                players.Add(playerReader.GetInt32(0));
+                while (reader.Read())
+                {
+                    string country = reader.GetString(0);
+                    countryNames.Add(country);
+                }
+                thisConnection.Close();
             }
-            playerConnection.Close();
+            catch (SqlException error)
+            {
+
+            }
+            try
+            {
+                SqlConnection playerConnection = new SqlConnection(connectionString);
+                SqlCommand playerCommand = new SqlCommand("GeT_gamerS", playerConnection);
+
+                playerCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                playerCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                playerConnection.Open();
+                SqlDataReader playerReader = playerCommand.ExecuteReader();
+                while (playerReader.Read())
+                {
+                    players.Add(playerReader.GetInt32(0));
+                }
+                playerConnection.Close();
+            }
+            catch (SqlException error2)
+            {
+
+            }
             Random rand = new Random();
             int numPlayers = players.Count;
             int playerIndex = 0;
