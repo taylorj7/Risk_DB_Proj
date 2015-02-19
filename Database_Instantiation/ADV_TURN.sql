@@ -18,6 +18,11 @@ BEGIN
 	RAISERROR('This is wrong', 16,1)
 	RETURN 1
 END
+IF @UserID NOT IN (SELECT [User_ID] FROM Player_In WHERE @GameID = Game_ID AND Turn_Position IN (SELECT Current_Position FROM Games WHERE Game_ID = @GameID))
+BEGIN
+	RAISERROR('IT ISNT EVEN YOUR TURN', 16,2)
+	RETURN 1
+END
 DECLARE @Hand int
 SET @Hand = (SELECT Hand_ID FROM Player_In WHERE @GameID = Game_ID AND @UserID = [User_ID])
 IF @Random = 0
@@ -54,7 +59,6 @@ BEGIN
 	WHERE @GameID = Game_ID
 END
 END
-
 GO
 
 
