@@ -261,21 +261,28 @@ namespace RiskWebsite
             SqlCommand thisCommand2 = new SqlCommand("Get Active Games", thisConnection2);
             thisCommand2.CommandType = System.Data.CommandType.StoredProcedure;
             thisCommand2.Parameters.Add(new SqlParameter("@User_ID", Application["id"]));
-            thisConnection2.Open();
-            SqlDataReader reader2 = thisCommand2.ExecuteReader();
+            try
+            {
+                thisConnection2.Open();
+                SqlDataReader reader2 = thisCommand2.ExecuteReader();
 
-            while (reader2.Read())
+                while (reader2.Read())
+                {
+
+                    int id = reader2.GetInt32(1);
+                    int CurrentPosition = reader2.GetInt16(0);
+                    if (id == ((int)Application["game"]))
+                    {
+                        Application["turn"] = CurrentPosition;
+                    }
+                }
+
+                thisConnection2.Close();
+            }
+            catch (SqlException error3)
             {
 
-                int id = reader2.GetInt32(1);
-                int CurrentPosition = reader2.GetInt16(0);
-                if (id == ((int)Application["game"]))
-                {
-                    Application["turn"] = CurrentPosition;
-                }
             }
-
-            thisConnection2.Close();
             setupDropDownLists(true);
             Application["conquered"] = false;
             hitStart();
@@ -396,21 +403,27 @@ namespace RiskWebsite
                 gameCommand3.Parameters.Add(new SqlParameter("@attackerID", Application["id"]));
                 gameCommand3.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
                 gameCommand3.Parameters.Add(new SqlParameter("@Country", defendingCountry));
-                gameConnection3.Open();
-                gameCommand3.ExecuteNonQuery();
-                gameConnection3.Close();
+                try
+                {
+                    gameConnection3.Open();
+                    gameCommand3.ExecuteNonQuery();
+                    gameConnection3.Close();
 
-                SqlConnection gameConnection = new SqlConnection(connectionString);
-                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
-                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
-                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
-                gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - (attackLoss + 1)));
-                gameConnection.Open();
-                gameCommand.ExecuteNonQuery();
-                gameConnection.Close();
+                    SqlConnection gameConnection = new SqlConnection(connectionString);
+                    SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                    gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    gameCommand.Parameters.Add(new SqlParameter("@Owner", countryOwners[yourCountry]));
+                    gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                    gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                    gameCommand.Parameters.Add(new SqlParameter("@newTroops", countryTroops[yourCountry] - (attackLoss + 1)));
+                    gameConnection.Open();
+                    gameCommand.ExecuteNonQuery();
+                    gameConnection.Close();
+                }
+                catch (SqlException error)
+                {
 
+                }
                 setupDropDownLists(true);
                 return;
             }
@@ -420,74 +433,98 @@ namespace RiskWebsite
         private int turnIn(int soldier, int horse, int cannon, int wild)
         {
             int bonus = 0;
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("getRidOfHands", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            gameCommand.Parameters.Add(new SqlParameter("@soldier", soldier));
-            gameCommand.Parameters.Add(new SqlParameter("@horse", horse));
-            gameCommand.Parameters.Add(new SqlParameter("@cannon", cannon));
-            gameCommand.Parameters.Add(new SqlParameter("@wild", wild));
-            gameCommand.Parameters.Add(new SqlParameter("@Bonus", System.Data.SqlDbType.Int));
-            gameCommand.Parameters["@Bonus"].Direction = System.Data.ParameterDirection.Output;
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            bonus = (int)Convert.ToInt32(gameCommand.Parameters["@Bonus"].Value);
-            gameConnection.Close();
+            try
+            {
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("getRidOfHands", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@soldier", soldier));
+                gameCommand.Parameters.Add(new SqlParameter("@horse", horse));
+                gameCommand.Parameters.Add(new SqlParameter("@cannon", cannon));
+                gameCommand.Parameters.Add(new SqlParameter("@wild", wild));
+                gameCommand.Parameters.Add(new SqlParameter("@Bonus", System.Data.SqlDbType.Int));
+                gameCommand.Parameters["@Bonus"].Direction = System.Data.ParameterDirection.Output;
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                bonus = (int)Convert.ToInt32(gameCommand.Parameters["@Bonus"].Value);
+                gameConnection.Close();
+            }
+            catch (SqlException e)
+            {
+
+            }
             return bonus;
         }
         private int turnInTroops()
         {
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getHand", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@Game_ID", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-            int soldier = 0;
-            int horse = 0;
-            int cannon = 0;
-            int wild = 0;
-            while (reader.Read())
+            try
             {
-                soldier = reader.GetInt16(0);
-                horse = reader.GetInt16(1);
-                cannon = reader.GetInt16(2);
-                wild = reader.GetInt16(3);
-            }
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getHand", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@Game_ID", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
+                int soldier = 0;
+                int horse = 0;
+                int cannon = 0;
+                int wild = 0;
+                while (reader.Read())
+                {
+                    soldier = reader.GetInt16(0);
+                    horse = reader.GetInt16(1);
+                    cannon = reader.GetInt16(2);
+                    wild = reader.GetInt16(3);
+                }
 
-            thisConnection.Close();
-            if((soldier + wild) >=3) {
-                return turnIn(soldier, 0, 0, 3 - soldier);
-            }
-            else if ((horse + wild) >=3) {
-                return turnIn(0, horse, 0, 3- horse);
-            }
-            else if ((cannon + wild)>=3) {
-                return turnIn(0, 0, cannon, 3- cannon);
-            }
-            else if (wild>=3) {
-                return turnIn(0, 0, 0, 3);
-            }
+                thisConnection.Close();
+                if ((soldier + wild) >= 3)
+                {
+                    return turnIn(soldier, 0, 0, 3 - soldier);
+                }
+                else if ((horse + wild) >= 3)
+                {
+                    return turnIn(0, horse, 0, 3 - horse);
+                }
+                else if ((cannon + wild) >= 3)
+                {
+                    return turnIn(0, 0, cannon, 3 - cannon);
+                }
+                else if (wild >= 3)
+                {
+                    return turnIn(0, 0, 0, 3);
+                }
 
-            if(soldier >0 && horse > 0 && cannon > 0) {
-                return turnIn(1, 1, 1, 0);
-            }
+                if (soldier > 0 && horse > 0 && cannon > 0)
+                {
+                    return turnIn(1, 1, 1, 0);
+                }
 
-            if(wild > 0) {
-                if(soldier > 0) {
-	                if(horse > 0) {
-		                return turnIn(1, 1, 0, 1);
-	                }
-	                if(cannon > 0) {
-                        return turnIn(1, 0, 1, 1);
+                if (wild > 0)
+                {
+                    if (soldier > 0)
+                    {
+                        if (horse > 0)
+                        {
+                            return turnIn(1, 1, 0, 1);
+                        }
+                        if (cannon > 0)
+                        {
+                            return turnIn(1, 0, 1, 1);
+                        }
+                    }
+                    else if (horse > 0 && cannon > 0)
+                    {
+                        return turnIn(0, 1, 1, 1);
                     }
                 }
-                else if (horse > 0 && cannon > 0) {
-                    return turnIn(0, 1, 1, 1);
-                }
+            }
+            catch (SqlException error)
+            {
+
             }
             return 0;
 
@@ -498,17 +535,24 @@ namespace RiskWebsite
         {
 
             int bonus = this.turnInTroops();
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("getBonus", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            gameCommand.Parameters.Add(new SqlParameter("@Bonus", System.Data.SqlDbType.Int));
-            gameCommand.Parameters["@Bonus"].Direction = System.Data.ParameterDirection.Output;
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            bonus += (int)Convert.ToInt32(gameCommand.Parameters["@Bonus"].Value);
-            gameConnection.Close();
+            try
+            {
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("getBonus", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@Bonus", System.Data.SqlDbType.Int));
+                gameCommand.Parameters["@Bonus"].Direction = System.Data.ParameterDirection.Output;
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                bonus += (int)Convert.ToInt32(gameCommand.Parameters["@Bonus"].Value);
+                gameConnection.Close();
+            }
+            catch (SqlException e)
+            {
+
+            }
             int countryCount = 0;
             int[] owners = countryOwners.Values.ToArray();
             for (int i = 0; i < owners.Length; i++ )
@@ -543,6 +587,7 @@ namespace RiskWebsite
         private ArrayList getBorderingCountries(string country)
         {
             ArrayList borderCountries = new ArrayList();
+            try {
             SqlConnection gameConnection = new SqlConnection(connectionString);
             SqlCommand gameCommand = new SqlCommand("borderingCountries", gameConnection);
             gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
@@ -554,6 +599,9 @@ namespace RiskWebsite
                 borderCountries.Add(countryReader.GetString(0));
             }
             gameConnection.Close();
+            } catch (SqlException e)
+            {
+             }
             return borderCountries;
         }
 
@@ -561,48 +609,55 @@ namespace RiskWebsite
         {
             TurnLabel.Text = "It is your turn!";
             int turn;
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                turn = reader.GetInt16(0);
-                if (turn != (int)Application["turn"])
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
+                while (reader.Read())
                 {
-                    hideEverything(false);
-                    return;
+                    turn = reader.GetInt16(0);
+                    if (turn != (int)Application["turn"])
+                    {
+                        hideEverything(false);
+                        return;
+                    }
+                }
+                getPlaceTroops();
+                RemainingTroops.Text = "" + Application["troops"];
+                int maxTroops = (int)Application["troops"];
+                AttackButton.Visible = true;
+                AttackResult.Visible = true;
+                YourBorderingCountriesMove.Visible = true;
+                YourCountriesAttack.Visible = true;
+                YourCountriesMove.Visible = true;
+                YourCountriesPlace.Visible = true;
+                BorderingCountriesAttack.Visible = true;
+                PlaceTextBox.Visible = true;
+                PlaceButton.Visible = true;
+                MoveTroopsButton.Visible = true;
+                MoveTroopsNumber.Visible = true;
+                EndTurn.Visible = true;
+                if (maxTroops != 0)
+                {
+                    AttackButton.Visible = false;
+                    EndTurn.Visible = false;
+                    MoveTroopsButton.Visible = false;
+                }
+                else
+                {
+                    AttackButton.Visible = true;
+                    EndTurn.Visible = true;
+                    MoveTroopsButton.Visible = true;
                 }
             }
-            getPlaceTroops();
-            RemainingTroops.Text = "" + Application["troops"];
-            int maxTroops = (int)Application["troops"];
-            AttackButton.Visible = true;
-            AttackResult.Visible = true;
-            YourBorderingCountriesMove.Visible = true;
-            YourCountriesAttack.Visible = true;
-            YourCountriesMove.Visible = true;
-            YourCountriesPlace.Visible = true;
-            BorderingCountriesAttack.Visible = true;
-            PlaceTextBox.Visible = true;
-            PlaceButton.Visible = true;
-            MoveTroopsButton.Visible = true;
-            MoveTroopsNumber.Visible = true;
-            EndTurn.Visible = true;
-            if (maxTroops != 0)
+            catch (SqlException e)
             {
-                AttackButton.Visible = false;
-                EndTurn.Visible = false;
-                MoveTroopsButton.Visible = false;
-            }
-            else
-            {
-                AttackButton.Visible = true;
-                EndTurn.Visible = true;
-                MoveTroopsButton.Visible = true;
+
             }
         }
         private void hideTurnFields()
@@ -610,69 +665,81 @@ namespace RiskWebsite
             TurnLabel.Text = "It is your turn!";
             int turn;
             SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                turn = reader.GetInt16(0);
-                if (turn != (int)Application["turn"])
+                SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
+                while (reader.Read())
                 {
-                    hideEverything(false);
-                    return;
+                    turn = reader.GetInt16(0);
+                    if (turn != (int)Application["turn"])
+                    {
+                        hideEverything(false);
+                        return;
+                    }
+                }
+                if (!IsPostBack)
+                {
+                    getPlaceTroops();
+                }
+                RemainingTroops.Text = "" + Application["troops"];
+                int maxTroops = (int)Application["troops"];
+                if (maxTroops != 0)
+                {
+                    AttackButton.Visible = false;
+                    EndTurn.Visible = false;
+                    MoveTroopsButton.Visible = false;
+                }
+                else
+                {
+                    AttackButton.Visible = true;
+                    EndTurn.Visible = true;
+                    MoveTroopsButton.Visible = true;
                 }
             }
-            if (!IsPostBack)
+            catch (SqlException e)
             {
-                getPlaceTroops();
-            }
-            RemainingTroops.Text = "" + Application["troops"];
-            int maxTroops = (int)Application["troops"];
-            if (maxTroops != 0)
-            {
-                AttackButton.Visible = false;
-                EndTurn.Visible = false;
-                MoveTroopsButton.Visible = false;
-            }
-            else
-            {
-                AttackButton.Visible = true;
-                EndTurn.Visible = true;
-                MoveTroopsButton.Visible = true;
+
             }
         }
         protected void hideEverything(Boolean alwaysHide) {
-            SqlConnection thisConnection = new SqlConnection(connectionString);
-            SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
-            thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-            thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            thisConnection.Open();
-            SqlDataReader reader = thisCommand.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                int turn = reader.GetInt16(0);
-                if (alwaysHide || turn != (int)Application["turn"])
+                SqlConnection thisConnection = new SqlConnection(connectionString);
+                SqlCommand thisCommand = new SqlCommand("getUserTurnPosition", thisConnection);
+                thisCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                thisCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+                thisCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                thisConnection.Open();
+                SqlDataReader reader = thisCommand.ExecuteReader();
+                while (reader.Read())
                 {
-                    TurnLabel.Text = "It is not your turn!";
-                    AttackButton.Visible = false;
-                    AttackResult.Visible = false;
-                    YourBorderingCountriesMove.Visible = false;
-                    YourCountriesAttack.Visible = false;
-                    YourCountriesMove.Visible = false;
-                    YourCountriesPlace.Visible = false;
-                    BorderingCountriesAttack.Visible = false;
-                    PlaceTextBox.Visible = false;
-                    PlaceButton.Visible = false;
-                    MoveTroopsButton.Visible = false;
-                    MoveTroopsNumber.Visible = false;
-                    EndTurn.Visible = false;
-                    MoveLabel.Text = "";
-                    return;
+                    int turn = reader.GetInt16(0);
+                    if (alwaysHide || turn != (int)Application["turn"])
+                    {
+                        TurnLabel.Text = "It is not your turn!";
+                        AttackButton.Visible = false;
+                        AttackResult.Visible = false;
+                        YourBorderingCountriesMove.Visible = false;
+                        YourCountriesAttack.Visible = false;
+                        YourCountriesMove.Visible = false;
+                        YourCountriesPlace.Visible = false;
+                        BorderingCountriesAttack.Visible = false;
+                        PlaceTextBox.Visible = false;
+                        PlaceButton.Visible = false;
+                        MoveTroopsButton.Visible = false;
+                        MoveTroopsNumber.Visible = false;
+                        EndTurn.Visible = false;
+                        MoveLabel.Text = "";
+                        return;
+                    }
                 }
+            }
+            catch (SqlException e) { 
             }
             
                     
@@ -683,33 +750,40 @@ namespace RiskWebsite
             if(!((Boolean) Application["conquered"])) {
                 random = 5;
             }
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("ADV_TURN", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-
-            gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
-
-            gameCommand.Parameters.Add(new SqlParameter("@Random", random));
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            gameConnection.Close();
-
-            SqlConnection gameConnection2 = new SqlConnection(connectionString);
-            SqlCommand gameCommand2 = new SqlCommand("isWinner", gameConnection2);
-            gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand2.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
-            gameCommand2.Parameters.Add(new SqlParameter("@UserID", System.Data.SqlDbType.Int));
-            gameCommand2.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
-            gameConnection2.Open();
-            gameCommand2.ExecuteNonQuery();
-
-            int winner = (int)Convert.ToInt32(gameCommand.Parameters["@UserID"].Value);
-            if (winner != 0)
+            try
             {
-                TurnLabel.Text = "Game Over. User: " + winner + " won!";
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("ADV_TURN", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+
+                gameCommand.Parameters.Add(new SqlParameter("@UserID", Application["id"]));
+
+                gameCommand.Parameters.Add(new SqlParameter("@Random", random));
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                gameConnection.Close();
+
+                SqlConnection gameConnection2 = new SqlConnection(connectionString);
+                SqlCommand gameCommand2 = new SqlCommand("isWinner", gameConnection2);
+                gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand2.Parameters.Add(new SqlParameter("@GameID", Application["game"]));
+                gameCommand2.Parameters.Add(new SqlParameter("@UserID", System.Data.SqlDbType.Int));
+                gameCommand2.Parameters["@UserID"].Direction = System.Data.ParameterDirection.Output;
+                gameConnection2.Open();
+                gameCommand2.ExecuteNonQuery();
+
+                int winner = (int)Convert.ToInt32(gameCommand.Parameters["@UserID"].Value);
+                if (winner != 0)
+                {
+                    TurnLabel.Text = "Game Over. User: " + winner + " won!";
+                }
+                gameConnection2.Close();
             }
-            gameConnection2.Close();
+            catch (SqlException error)
+            {
+
+            }
             hideEverything(true);
         }
 
@@ -725,17 +799,23 @@ namespace RiskWebsite
                 PlaceLabel.Text = "You can't place that many troops";
                 return;
             }
+            try
+            {
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] + troops)));
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                gameConnection.Close();
+            }
+            catch (SqlException error2)
+            {
 
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
-            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
-            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-            gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] + troops)));
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            gameConnection.Close();
+            }
             Application["troops"] = placeTroops - troops;
             if (placeTroops - troops == 0)
             {
@@ -763,28 +843,34 @@ namespace RiskWebsite
             {
                 MoveLabel.Text = "";
             }
+            try
+            {
+                SqlConnection gameConnection = new SqlConnection(connectionString);
+                SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
+                gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+                gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
+                gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] - troops)));
+                gameConnection.Open();
+                gameCommand.ExecuteNonQuery();
+                gameConnection.Close();
 
-            SqlConnection gameConnection = new SqlConnection(connectionString);
-            SqlCommand gameCommand = new SqlCommand("Update_Garrison", gameConnection);
-            gameCommand.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
-            gameCommand.Parameters.Add(new SqlParameter("@Country", yourCountry));
-            gameCommand.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-            gameCommand.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[yourCountry] - troops)));
-            gameConnection.Open();
-            gameCommand.ExecuteNonQuery();
-            gameConnection.Close();
+                SqlConnection gameConnection2 = new SqlConnection(connectionString);
+                SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
+                gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
+                gameCommand2.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
+                gameCommand2.Parameters.Add(new SqlParameter("@Country", borderCountry));
+                gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
+                gameCommand2.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[borderCountry] + troops)));
+                gameConnection2.Open();
+                gameCommand2.ExecuteNonQuery();
+                gameConnection2.Close();
+            }
+            catch (SqlException error)
+            {
 
-            SqlConnection gameConnection2 = new SqlConnection(connectionString);
-            SqlCommand gameCommand2 = new SqlCommand("Update_Garrison", gameConnection2);
-            gameCommand2.CommandType = System.Data.CommandType.StoredProcedure;
-            gameCommand2.Parameters.Add(new SqlParameter("@Owner", Application["id"]));
-            gameCommand2.Parameters.Add(new SqlParameter("@Country", borderCountry));
-            gameCommand2.Parameters.Add(new SqlParameter("@gameID", Application["game"]));
-            gameCommand2.Parameters.Add(new SqlParameter("@newTroops", (countryTroops[borderCountry] + troops)));
-            gameConnection2.Open();
-            gameCommand2.ExecuteNonQuery();
-            gameConnection2.Close();
+            }
             setupDropDownLists(false);
         }
 

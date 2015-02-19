@@ -1,12 +1,13 @@
 USE [Risk42]
 GO
 
-/****** Object:  StoredProcedure [dbo].[add To Game]    Script Date: 2/18/2015 3:19:59 PM ******/
+/****** Object:  StoredProcedure [dbo].[add To Game]    Script Date: 2/19/2015 3:12:33 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 CREATE PROC [dbo].[add To Game]
 (@User_id int, @Username varchar(10), @Game_id int)
@@ -23,7 +24,7 @@ BEGIN
 END
 DECLARE @UserID int
 SET @UserID = (SELECT [User_ID] FROM Users WHERE @Username = Username)
-IF @Username IN (SELECT [User_ID] FROM Player_In WHERE @UserID = [User_ID])
+IF @UserID IN (SELECT [User_ID] FROM Player_In WHERE @Game_id = [Game_ID])
 BEGIN
 	RAISERROR('THAT PERSON IS ALREADY HERE', 3,1)
 	RETURN 1
@@ -39,6 +40,6 @@ BEGIN
 	RETURN 0
 END
 RETURN 1
-GO
 
+GO
 
